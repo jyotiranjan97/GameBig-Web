@@ -1,4 +1,4 @@
-import { db } from '../firebase/config';
+import { db } from '../firebase/firebaseClient';
 import { UserData } from '../utilities/types';
 
 const getUser = async (username: string) => {

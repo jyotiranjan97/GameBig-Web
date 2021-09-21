@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import Head from 'next/head';
+import nookies from 'nookies';
+import { InferGetServerSidePropsType, GetServerSidePropsContext } from 'next';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import Backdrop from '@material-ui/core/Backdrop';
 import { useAuth } from '../../../context/authContext';
-import { db } from '../../../firebase/config';
+import { db } from '../../../firebase/firebaseClient';
+import firebaseAdmin from '../../../firebase/firebaseAdmin';
 import Aux from '../../../hoc/Auxiliary/Auxiliary';
 import { UserData, GamerData } from '../../../utilities/types';
 import GameItem from '../../../components/Profile/GameItem';
@@ -107,26 +110,37 @@ export default function Home({
   );
 }
 
-export async function getServerSideProps(context: {
-  params: { userId: string };
-}) {
-  const { userId: username } = context.params;
-  let userData = await getUser(username);
-  const savedGames: Array<GamerData> = [];
-  await db
-    .collection('gamers')
-    .where('username', '==', username)
-    .get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        const { ingamename, ingameid, gameCode } = doc.data();
-        savedGames.push({ ingamename, ingameid, gameCode, docId: doc.id });
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  try {
+    const cookies = nookies.get(context);
+    await firebaseAdmin
+      .auth()
+      .verifyIdToken(cookies.token)
+      .catch((error) => {
+        console.log('***************', error);
       });
-    })
-    .catch((error) => {
-      console.log('Error getting documents: ', error);
-    });
-  return {
-    props: { userData, savedGames },
-  };
+    const { username } = context.params;
+    let userData = await getUser(username);
+    const savedGames: Array<GamerData> = [];
+    await firebaseAdmin
+      .firestore()
+      .collection('gamers')
+      .where('username', '==', username)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const { ingamename, ingameid, gameCode } = doc.data();
+          savedGames.push({ ingamename, ingameid, gameCode, docId: doc.id });
+        });
+      })
+      .catch((error) => {
+        console.log('Error getting documents: ', error);
+      });
+    return {
+      props: { userData, savedGames },
+    };
+  } catch (err) {
+    console.log('Error getting server side props: ', err);
+    return { props: {} as never };
+  }
 }
