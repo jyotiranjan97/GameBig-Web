@@ -1,5 +1,12 @@
 const path = require('path');
-module.exports = {
+const withPWA = require('next-pwa');
+
+module.exports = withPWA({
+  pwa: {
+    dest: 'public',
+    disable: process.env.NODE_ENV === 'development',
+  },
+  reactStrictMode: true,
   i18n: {
     locales: ['en'],
     defaultLocale: 'en',
@@ -32,4 +39,4 @@ module.exports = {
     FIREBASE_CLIENT_X509_CERT_URL: process.env.FIREBASE_CLIENT_X509_CERT_URL,
     FIREBASE_DATABASE_URL: process.env.FIREBASE_DATABASE_URL,
   },
-};
+});
