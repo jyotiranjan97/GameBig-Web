@@ -1,9 +1,12 @@
-import { db } from '../firebase/firebaseClient';
+import firebase from '../firebase/firebaseClient';
 import { OrgFormData } from '../utilities/organization/types';
 
 export const fetchOrganizationData = async (orgId: string) => {
   let organizationData: OrgFormData | undefined = undefined;
-  const organizationRef = db.collection('organizations').doc(orgId);
+  const organizationRef = firebase
+    .firestore()
+    .collection('organizations')
+    .doc(orgId);
   try {
     const orgDoc = await organizationRef.get();
     if (orgDoc.exists) {

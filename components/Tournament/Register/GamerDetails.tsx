@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, Typography } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import { db } from '../../../firebase/firebaseClient';
+import firebase from '../../../firebase/firebaseClient';
 import { GamerData, TeamType } from '../../../utilities/types';
 import GamerItem from './GamerItem';
 
@@ -50,7 +50,9 @@ export default function GamerDetails({ tId, team, gameCode, onCancel }: Props) {
   const saveGamerDetails = (gamersArray: GamerData[]) => {
     const usernames = gamersArray.map((gamer) => gamer.username);
     if (team && gamersArray) {
-      db.collection('tournaments')
+      firebase
+        .firestore()
+        .collection('tournaments')
         .doc(tId)
         .collection('teams')
         .add({

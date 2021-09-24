@@ -1,10 +1,13 @@
-import { db } from '../firebase/firebaseClient';
+import firebase from '../firebase/firebaseClient';
 import { OrgFormData } from '../utilities/organization/types';
 
 export const addOrganization = async (data: OrgFormData) => {
   let orgId = null;
   try {
-    const docRef = await db.collection('organizations').add(data);
+    const docRef = await firebase
+      .firestore()
+      .collection('organizations')
+      .add(data);
     orgId = docRef.id;
   } catch (err) {
     console.log(err);
@@ -18,7 +21,8 @@ export const addOrganizationIdtoAdminUser = async (
   orgName: string,
   orgId: string
 ) => {
-  await db
+  await firebase
+    .firestore()
     .collection('users')
     .doc(docId)
     .update({ linkedOrganizationId: orgId, linkedOrganizationName: orgName });

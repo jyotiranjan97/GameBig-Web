@@ -14,7 +14,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import SnackbarAlert from '../UI/Snackbar/SnackBar';
-import { db } from '../../firebase/firebaseClient';
+import firebase from '../../firebase/firebaseClient';
 import { TeamType } from '../../utilities/types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -146,7 +146,7 @@ export default function CreateTeam({
       return;
     }
     try {
-      await db.collection('teams').add(team);
+      await firebase.firestore().collection('teams').add(team);
       setSnackbarData({
         ...snackbarData,
         open: true,
@@ -160,7 +160,8 @@ export default function CreateTeam({
   };
 
   const isUserValid = async (username: string) =>
-    await db
+    await firebase
+      .firestore()
       .collection('users')
       .where('username', '==', username)
       .get()

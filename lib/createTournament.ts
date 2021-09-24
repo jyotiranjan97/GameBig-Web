@@ -1,4 +1,4 @@
-import firebase, { db } from '../firebase/firebaseClient';
+import firebase from '../firebase/firebaseClient';
 import { TournamentFormData } from '../utilities/tournament/types';
 
 export const addNewTournament = async (
@@ -8,12 +8,15 @@ export const addNewTournament = async (
 ) => {
   let tournamentId = null;
   try {
-    const tournamentRef = await db.collection('tournaments').add({
-      ...data,
-      linkedOrgId: orgId,
-      linkedOrgName: orgName,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    });
+    const tournamentRef = await firebase
+      .firestore()
+      .collection('tournaments')
+      .add({
+        ...data,
+        linkedOrgId: orgId,
+        linkedOrgName: orgName,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
     tournamentId = tournamentRef.id;
   } catch (err) {
     console.log('Error adding new Tournament', err);

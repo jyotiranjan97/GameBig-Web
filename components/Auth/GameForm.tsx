@@ -11,7 +11,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Image from 'next/image';
 import { useAuth } from '../../context/authContext';
-import { db } from '../../firebase/firebaseClient';
+import firebase from '../../firebase/firebaseClient';
 import SnackbarAlert from '../UI/Snackbar/SnackBar';
 import { GamerData } from '../../utilities/types';
 
@@ -104,7 +104,8 @@ function GameForm({
     ingameid: string;
   }) => {
     try {
-      await db
+      await firebase
+        .firestore()
         .collection('gamers')
         .add({ username: username, gameCode: game.gameCode, ...gameData });
       setSnackbarData({
@@ -122,7 +123,11 @@ function GameForm({
     ingameid: string;
   }) => {
     try {
-      await db.collection('gamers').doc(oldValues?.docId).update(gameData);
+      await firebase
+        .firestore()
+        .collection('gamers')
+        .doc(oldValues?.docId)
+        .update(gameData);
       setSnackbarData({
         ...snackbarData,
         open: true,

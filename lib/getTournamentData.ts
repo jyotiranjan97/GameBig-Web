@@ -1,10 +1,10 @@
-import { db } from '../firebase/firebaseClient';
+import firebase from '../firebase/firebaseClient';
 import { TournamentData } from '../utilities/tournament/types';
 
 export const fetchTournamentDataById = async (id: string) => {
   let tournamentData = {} as TournamentData;
 
-  const tournamentRef = db.collection('tournaments').doc(id);
+  const tournamentRef = firebase.firestore().collection('tournaments').doc(id);
   try {
     const tournamentDoc = await tournamentRef.get();
     if (tournamentDoc.exists) {

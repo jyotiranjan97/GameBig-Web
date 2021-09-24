@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { db } from '../../firebase/firebaseClient';
+import firebase from '../../firebase/firebaseClient';
 import { TeamType } from '../../utilities/types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -68,7 +68,7 @@ export default function TeamItem({
 
   const deleteTeam = async () => {
     try {
-      await db.collection('teams').doc(team.docId).delete();
+      await firebase.firestore().collection('teams').doc(team.docId).delete();
       setSnackbarData({
         ...snackbarData,
         open: true,

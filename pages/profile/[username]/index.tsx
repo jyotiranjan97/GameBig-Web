@@ -7,8 +7,8 @@ import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import Backdrop from '@material-ui/core/Backdrop';
 import { useAuth } from '../../../context/authContext';
-import { db } from '../../../firebase/firebaseClient';
-import firebaseAdmin from '../../../firebase/firebaseAdmin';
+import firebase from '../../../firebase/firebaseClient';
+import { firebaseAdmin } from '../../../firebase/firebaseAdmin';
 import Aux from '../../../hoc/Auxiliary/Auxiliary';
 import { UserData, GamerData } from '../../../utilities/types';
 import GameItem from '../../../components/Profile/GameItem';
@@ -16,6 +16,7 @@ import GameForm from '../../../components/Auth/GameForm';
 import { games as allSupportedGames } from '../../../utilities/GameList';
 import ProfileHeader from '../../../components/Profile/ProfileHeader';
 import getUser from '../../../lib/getUser';
+import getGamerData from '../../../lib/getGamerData';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -68,7 +69,7 @@ export default function Home({
         <link rel="manifest" href="/manifest.json" />
       </Head>
       <Aux>
-        <ProfileHeader userData={userData} tabNumber={0} />
+        {/* <ProfileHeader userData={userData} tabNumber={0} />
         <div>
           {userData.username === user.username ? (
             <Button
@@ -92,9 +93,9 @@ export default function Home({
               />
             );
           })}
-        </div>
+        </div> */}
         <Button onClick={signout}>Sign Out</Button>
-        <Backdrop className={classes.backdrop} open={open}>
+        {/* <Backdrop className={classes.backdrop} open={open}>
           {Object.keys(allSupportedGames).map(function (key, index) {
             return (
               <GameForm
@@ -110,43 +111,37 @@ export default function Home({
           <Button variant="contained" color="secondary" onClick={handleClose}>
             Close
           </Button>
-        </Backdrop>
+        </Backdrop>*/}
       </Aux>
     </div>
   );
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+  let savedGames;
+  let userData;
   try {
     const cookies = nookies.get(context);
+    console.log(cookies.token, '=========================');
+
     await firebaseAdmin
       .auth()
       .verifyIdToken(cookies.token)
       .catch((error) => {
-        console.log('***************', error);
+        console.log('Error verifying token...................', error);
       });
-    const { username } = context.params;
-    let userData = await getUser(username);
-    const savedGames: Array<GamerData> = [];
-    await firebaseAdmin
-      .firestore()
-      .collection('gamers')
-      .where('username', '==', username)
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          const { ingamename, ingameid, gameCode } = doc.data();
-          savedGames.push({ ingamename, ingameid, gameCode, docId: doc.id });
-        });
-      })
-      .catch((error) => {
-        console.log('Error getting documents: ', error);
-      });
+    const { username } = context.query;
+    if (typeof username == 'string') {
+      // userData = await getUser(username);
+      // savedGames = getGamerData(username);
+    }
     return {
       props: { userData, savedGames },
     };
   } catch (err) {
-    console.log('Error getting server side props: ', err);
+    context.res.writeHead(302, { Location: '/auth' });
+    context.res.end();
+    console.log('Error getting server side props:', err);
     return { props: {} as never };
   }
 }

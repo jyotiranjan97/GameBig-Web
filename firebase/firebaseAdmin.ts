@@ -14,4 +14,4 @@ if (!firebaseAdmin.apps.length) {
     databaseURL: process.env.FIREBASE_DATABASE_URL,
   });
 }
-export default firebaseAdmin;
+export { firebaseAdmin };

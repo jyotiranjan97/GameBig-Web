@@ -15,7 +15,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { useAuth } from '../../context/authContext';
 import SnackbarAlert from '../UI/Snackbar/SnackBar';
 import { UserData } from '../../utilities/types';
-import { db } from '../../firebase/firebaseClient';
+import firebase from '../../firebase/firebaseClient';
 import { countries } from '../../utilities/CountryList';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -106,7 +106,11 @@ function ProfileForm({ oldValues, push }: Props) {
   const saveUserData = async (username: string, userData: UserData) => {
     updateDisplayName(userData.username);
     try {
-      await db.collection('users').doc(oldValues.docId).update(userData);
+      await firebase
+        .firestore()
+        .collection('users')
+        .doc(oldValues.docId)
+        .update(userData);
     } catch (err) {
       console.log('err', err);
     } finally {

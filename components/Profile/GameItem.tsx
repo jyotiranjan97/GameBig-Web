@@ -9,7 +9,7 @@ import {
 import Image from 'next/image';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { db } from '../../firebase/firebaseClient';
+import firebase from '../../firebase/firebaseClient';
 import { games } from '../../utilities/GameList';
 import { GamerData } from '../../utilities/types';
 
@@ -84,7 +84,7 @@ export default function GameItem({
 
   const deleteGame = async () => {
     try {
-      await db.collection('gamers').doc(docId).delete();
+      await firebase.firestore().collection('gamers').doc(docId).delete();
       if (gameCode)
         setSnackbarData({
           ...snackbarData,

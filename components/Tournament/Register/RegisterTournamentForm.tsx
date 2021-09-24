@@ -10,7 +10,7 @@ import {
 import AddIcon from '@material-ui/icons/Add';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Backdrop from '@material-ui/core/Backdrop';
-import { db } from '../../../firebase/firebaseClient';
+import firebase from '../../../firebase/firebaseClient';
 import { TeamType } from '../../../utilities/types';
 import { useAuth } from '../../../context/authContext';
 import CreateTeam from '../../Profile/createTeam';
@@ -96,7 +96,9 @@ export default function RegisterTournamentForm({ tId, gameCode }: Props) {
     const getTeams = () => {
       const teams: Array<TeamType> = [];
       if (user.username) {
-        db.collection('teams')
+        firebase
+          .firestore()
+          .collection('teams')
           .where('gamers', 'array-contains-any', [user.username])
           .get()
           .then((querySnapshot) => {
@@ -118,7 +120,9 @@ export default function RegisterTournamentForm({ tId, gameCode }: Props) {
 
   useEffect(() => {
     if (tId && user.username) {
-      db.collection('tournaments')
+      firebase
+        .firestore()
+        .collection('tournaments')
         .doc(tId)
         .collection('teams')
         .where('usernames', 'array-contains', user.username)
@@ -149,8 +153,12 @@ export default function RegisterTournamentForm({ tId, gameCode }: Props) {
   };
 
   const unregister = () => {
-    db.collection('tournaments').doc(tId).collection('teams').doc(teamId)
-      .delete;
+    firebase
+      .firestore()
+      .collection('tournaments')
+      .doc(tId)
+      .collection('teams')
+      .doc(teamId).delete;
   };
 
   if (isRegistered)

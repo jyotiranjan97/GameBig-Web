@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, createContext } from 'react';
 import { useRouter } from 'next/router';
 import nookies from 'nookies';
-import firebase, { db } from '../firebase/firebaseClient';
+import firebase from '../firebase/firebaseClient';
 import { User, UserData } from '../utilities/types';
 import getUser from '../lib/getUser';
 
@@ -74,7 +74,8 @@ function useProvideAuth() {
   };
 
   const isUsernameTaken = async (username: string) =>
-    await db
+    await firebase
+      .firestore()
       .collection('users')
       .where('username', '==', username)
       .where('username', '!=', user.username)
@@ -107,7 +108,8 @@ function useProvideAuth() {
 
   const createUser = async (userData: UserData | UserData) => {
     try {
-      await db
+      await firebase
+        .firestore()
         .collection('users')
         .add({ ...userData, uid: user.uid, photoURL: user.photoURL });
     } catch (err) {
@@ -117,7 +119,10 @@ function useProvideAuth() {
 
   const handleSignIn = async (user: firebase.User) => {
     const token = await user.getIdToken();
-    nookies.set(undefined, 'token', token, { path: '/' });
+    nookies.set(undefined, 'token', token, {
+      path: '/',
+      maxAge: 10 * 24 * 60 * 60,
+    });
     const { uid, displayName, photoURL } = user;
     if (uid && displayName && photoURL) {
       const userData = await getUser(displayName);
@@ -152,27 +157,30 @@ function useProvideAuth() {
     return firebase.auth().onIdTokenChanged(async (user) => {
       if (!user) {
         setUser({ uid: '', username: '', photoURL: '' });
-        nookies.set(undefined, 'token', '', { path: '/' });
+        // nookies.set(undefined, 'token', '', { maxAge: 10 * 24 * 60 * 60 });
+        return;
       } else {
-        const token = await user.getIdToken();
+        const token = await user.getIdToken(true);
+        console.log('token -----------------------------', token);
+
+        // nookies.set(undefined, 'token', token, { maxAge: 10 * 24 * 60 * 60 });
         const { uid, displayName, photoURL } = user;
         if (uid && displayName && photoURL) {
           getAndSetUserData({ uid, displayName, photoURL });
         }
-        nookies.set(undefined, 'token', token, { path: '/' });
       }
     });
   }, []);
 
   // force refresh the token every 10 minutes
-  useEffect(() => {
-    const handle = setInterval(async () => {
-      const user = firebase.auth().currentUser;
-      if (user) await user.getIdToken(true);
-    }, 10 * 60 * 1000);
+  // useEffect(() => {
+  //   const handle = setInterval(async () => {
+  //     const user = firebase.auth().currentUser;
+  //     if (user) await user.getIdToken(true);
+  //   }, 10 * 60 * 1000);
 
-    return () => clearInterval(handle);
-  }, []);
+  //   return () => clearInterval(handle);
+  // }, []);
 
   const updateOrgId = (id: string) => {
     setUserData({ ...userData, linkedOrganizationId: id });

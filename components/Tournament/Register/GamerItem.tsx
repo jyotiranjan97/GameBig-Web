@@ -3,7 +3,7 @@ import { TextField } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { db } from '../../../firebase/firebaseClient';
+import firebase from '../../../firebase/firebaseClient';
 import { GamerData } from '../../../utilities/types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -51,7 +51,8 @@ const GamerItem = ({ username, gameCode, updateGamer }: Props) => {
     const getDetails = async () => {
       const gamerArray: GamerData[] = [];
       if (username && gameCode) {
-        await db
+        await firebase
+          .firestore()
           .collection('gamers')
           .where('username', '==', username)
           .where('gameCode', '==', gameCode)

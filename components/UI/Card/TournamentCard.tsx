@@ -21,7 +21,7 @@ import {
   SportsEsportsRounded,
 } from '@material-ui/icons';
 import Link from 'next/link';
-import { db } from '../../../firebase/firebaseClient';
+import firebase from '../../../firebase/firebaseClient';
 import { useAuth } from '../../../context/authContext';
 import { TournamentData } from '../../../utilities/tournament/types';
 import {
@@ -96,7 +96,9 @@ export default function TournamentCard({ isOrganizer, data }: Props) {
 
   useEffect(() => {
     if (data.id && user.username) {
-      db.collection('tournaments')
+      firebase
+        .firestore()
+        .collection('tournaments')
         .doc(data.id)
         .collection('teams')
         .where('usernames', 'array-contains', user.username)
