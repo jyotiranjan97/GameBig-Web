@@ -54,8 +54,8 @@ export default function Home({
       </Head>
       <Aux>
         <ProfileHeader userData={userData} />
-        <div className="w-11/12 md:w-2/3 mx-auto">
-          <div className="flex justify-end mt-2 mr-1 md:mr-8">
+        <div className="w-11/12 md:w-5/6 lg:w-1/2 mx-auto">
+          <div className="flex justify-end mt-2 mr-1">
             {userData.username === user.username ? (
               <FixedButton name="Update Games" onClick={() => setOpen(true)} />
             ) : null}
