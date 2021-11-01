@@ -7,7 +7,7 @@ import { UserData, TeamType } from '../../../utilities/types';
 import TeamIntro from '../../../components/Profile/TeamIntro';
 import TeamItem from '../../../components/Profile/TeamItem';
 import ProfileHeader from '../../../components/Profile/ProfileHeader';
-import getUser from '../../../lib/getUser';
+import getUser from '../../../libs/getUser';
 import FixedButton from '../../../components/UI/Buttons/FixedButton';
 import Backdrop from '../../../components/UI/Backdrop/Backdrop';
 import { useAuth } from '../../../context/authContext';

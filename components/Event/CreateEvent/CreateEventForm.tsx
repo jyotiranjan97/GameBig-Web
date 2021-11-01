@@ -8,7 +8,7 @@ import { MODES, SCREAMS } from '../../../assets/data/Utils';
 import SelectDropDown from '../../UI/Select/SelectDropDown';
 import SelectRadioButton from '../../UI/Select/SelectRadioButton';
 import SliderSelect from '../../UI/Slider/SliderSelect';
-import { addNewEvent } from '../../../lib/createEvent';
+import { addNewEvent } from '../../../libs/createEvent';
 import { useAuth } from '../../../context/authContext';
 import FixedButton from '../../UI/Buttons/FixedButton';
 import ResponsiveButton from '../../UI/Buttons/ResponsiveButton';

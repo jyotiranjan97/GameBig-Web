@@ -1,8 +1,8 @@
 import { ChangeEvent, useState, useEffect } from 'react';
 import { useAuth } from '../../../context/authContext';
 import { db } from '../../../firebase/firebaseClient';
-import algoliaClient from '../../../lib/algolia';
-import debounce from '../../../lib/debounce';
+import algoliaClient from '../../../libs/algolia';
+import debounce from '../../../libs/debounce';
 import { UserData } from '../../../utilities/types';
 import SearchInput from '../../UI/Inputs/SearchInput';
 import MessageRoom from './MessageRoom';

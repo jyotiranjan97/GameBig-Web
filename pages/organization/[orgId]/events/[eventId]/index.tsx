@@ -8,7 +8,7 @@ import RegisterEventForm from '../../../../../components/Event/Register/Register
 import SendNotification from '../../../../../components/Event/Notification/SendNotification';
 import { useAuth } from '../../../../../context/authContext';
 import Aux from '../../../../../hoc/Auxiliary/Auxiliary';
-import { fetchEventDataById } from '../../../../../lib/getEventData';
+import { fetchEventDataById } from '../../../../../libs/getEventData';
 import { EventData } from '../../../../../utilities/eventItem/types';
 import SnackbarAlert from '@/components/UI/Snackbar/SnackBar';
 import SoloRegistrationForm from '../../../../../components/Event/Register/SoloRegistrationForm';

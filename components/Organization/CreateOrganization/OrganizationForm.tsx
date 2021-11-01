@@ -1,17 +1,17 @@
 import router from 'next/router';
 import { useFormik } from 'formik';
-import { OrgFormData } from '../../../utilities/organization/types';
-import { validationSchema } from '../../../utilities/organization/validator';
+import { OrgFormData } from '@/utilities/organization/types';
+import { validationSchema } from '@/utilities/organization/validator';
 import {
   addOrganization,
   addOrganizationIdtoAdminUser,
   updateOrganization,
-} from '../../../lib/addOrganization';
-import { useAuth } from '../../../context/authContext';
-import FixedButton from '../../UI/Buttons/FixedButton';
-import FormInput from '../../UI/Inputs/FormInput';
-import ResponsiveButton from '../../UI/Buttons/ResponsiveButton';
-import TextArea from '../../UI/Inputs/TextArea';
+} from '@/libs/addOrganization';
+import { useAuth } from '@/context/authContext';
+import FixedButton from '@/components/UI/Buttons/FixedButton';
+import FormInput from '@/components/UI/Inputs/FormInput';
+import TextArea from '@/components/UI/Inputs/TextArea';
+import ResponsiveButton from '@/components/UI/Buttons/ResponsiveButton';
 
 const scrollToTop = () => {
   window.scrollTo({

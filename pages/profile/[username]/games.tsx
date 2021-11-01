@@ -10,8 +10,8 @@ import GameItem from '../../../components/Profile/GameItem';
 import GameForm from '../../../components/Auth/GameForm';
 import { games as allSupportedGames } from '../../../utilities/GameList';
 import ProfileHeader from '../../../components/Profile/ProfileHeader';
-import getUser from '../../../lib/getUser';
-import getGamerData from '../../../lib/getGamerData';
+import getUser from '../../../libs/getUser';
+import getGamerData from '../../../libs/getGamerData';
 import Backdrop from '../../../components/UI/Backdrop/Backdrop';
 import FixedButton from '../../../components/UI/Buttons/FixedButton';
 
