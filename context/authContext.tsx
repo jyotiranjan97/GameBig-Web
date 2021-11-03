@@ -8,7 +8,7 @@ import { FriendRequest } from '../utilities/friends/friends';
 import { getFriendRequests, getUserData, saveUser } from '@/libs/user';
 
 const authContext = createContext({
-  userData: {} as UserData,
+  userData: { username: '' } as UserData,
   updateOrgId: (id: string) => {},
   updateOrgName: (name: string) => {},
   authPageNumber: 1,
