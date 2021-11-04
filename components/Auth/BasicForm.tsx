@@ -22,7 +22,7 @@ type Props = {
 };
 
 function BasicForm({ userData, setUserData }: Props) {
-  const { updateAuthPageNumber, saveUser, isUsernameTaken } = useAuth();
+  const { updateAuthPageNumber } = useAuth();
   const { openSnackBar } = useUI();
 
   const formik = useFormik({
