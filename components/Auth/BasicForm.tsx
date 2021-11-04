@@ -6,7 +6,7 @@ import { useAuth } from '../../context/authContext';
 import { UserData } from '../../utilities/types';
 import FormInput from '../UI/Inputs/FormInput';
 import FixedButton from '../UI/Buttons/FixedButton';
-import { isUsernameTaken, saveUser } from '@/libs/user';
+import { isUsernameTaken, updateUser } from '@/libs/user';
 
 const usernameRegExp = /^[a-zA-Z0-9-_]{0,40}$/;
 
@@ -36,7 +36,7 @@ function BasicForm({ userData, setUserData }: Props) {
         setErrors({ username: 'This username is taken!' });
       } else {
         setUserData(values);
-        saveUser(values);
+        updateUser(values);
         updateAuthPageNumber(3);
       }
       setSubmitting(false);
