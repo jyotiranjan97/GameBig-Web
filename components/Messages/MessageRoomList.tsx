@@ -36,17 +36,14 @@ const MessageRoomList = ({ setReceiver, setMessageRoomId }: Props) => {
           console.log(rooms);
           setMessageRooms(rooms);
         });
-  }, []);
+  }, [userData.username]);
 
   const searchUser = (query: string) => {
     const index = algoliaClient.initIndex('messageRooms');
-    index
-      .search(query, {
-        attributesToRetrieve: ['name', 'username', 'photoURL'],
-      })
-      .then(({ hits }) => {
-        setMessageRooms(hits);
-      });
+    index.search(query).then(({ hits }) => {
+      setMessageRooms(hits);
+      console.log(hits);
+    });
   };
 
   const clickHandler = (room: any) => {
