@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, Dispatch, SetStateAction } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { games } from '../../utilities/GameList';
 import { useAuth } from '../../context/authContext';
 import Message from './Message';
 import MessageInput from './MessageInput';
