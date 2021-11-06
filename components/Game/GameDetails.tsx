@@ -6,14 +6,27 @@ import TextButton from '../UI/Buttons/TextButton';
 import FormInput from '../UI/Inputs/FormInput';
 import TextArea from '../UI/Inputs/TextArea';
 import { games } from '@/utilities/GameList';
+import { GamerData } from '@/utilities/types';
+import { saveGamerData } from '@/libs/gamerData';
+import router from 'next/router';
+import { useAuth } from '@/context/authContext';
+import { useUI } from '@/context/uiContext';
 
 type Props = {
   updatePage: (page: number) => void;
-  game: string;
+  gameCode: string;
   setGame: Dispatch<SetStateAction<string>>;
+  gameData: GamerData;
+  closeModal: () => void;
 };
 
-const GameDetails: FC<Props> = ({ updatePage, game, setGame }) => {
+const GameDetails: FC<Props> = ({
+  updatePage,
+  gameCode,
+  setGame,
+  gameData,
+  closeModal,
+}) => {
   const initialValues = {
     inGameId: '',
     inGameName: '',
@@ -24,16 +37,33 @@ const GameDetails: FC<Props> = ({ updatePage, game, setGame }) => {
     about: '',
   };
 
+  const {
+    userData: { username },
+  } = useAuth();
+
+  const { openSnackBar } = useUI();
+
   const formik = useFormik({
-    initialValues: initialValues,
+    initialValues: { ...initialValues, ...gameData },
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      saveGamerData(values, username, gameCode);
     },
   });
 
   function backClicked() {
     updatePage(1);
     setGame('');
+  }
+
+  function onSaveHandler() {
+    formik.handleSubmit();
+    closeModal();
+    router.push(`/profile/${username}/games`);
+    openSnackBar({
+      type: 'success',
+      label: 'Saved',
+      message: 'Game data saved successfully!',
+    });
   }
 
   return (
@@ -46,14 +76,14 @@ const GameDetails: FC<Props> = ({ updatePage, game, setGame }) => {
         <div className="flex flex-row space-x-8">
           <section className="h-16 w-16 md:h-12 md:w-12 relative rounded-lg overflow-hidden">
             <Image
-              src={games[game].imageSource}
+              src={games[gameCode].imageSource}
               alt="Game Logo"
               layout="fill"
               objectFit="contain"
             />
           </section>
           <h5 className="text-indigo-500 text-xl font-semibold tracking-wide my-auto cursor-default">
-            {games[game].name}
+            {games[gameCode].name}
           </h5>
         </div>
 
@@ -116,7 +146,7 @@ const GameDetails: FC<Props> = ({ updatePage, game, setGame }) => {
 
       {/** Submit Button */}
       <section className="bottom-5 w-5/6 mx-auto">
-        <ResponsiveButton name="Save" />
+        <ResponsiveButton name="Save" onClick={onSaveHandler} type="button" />
       </section>
     </div>
   );

@@ -9,7 +9,7 @@ import { UserData, GamerData } from '../../../utilities/types';
 import GameItem from '../../../components/Profile/GameItem';
 import ProfileHeader from '../../../components/Profile/ProfileHeader';
 import getUser from '../../../libs/getUser';
-import getGamerData from '../../../libs/getGamerData';
+import { getGamerData } from '../../../libs/gamerData';
 import FixedButton from '../../../components/UI/Buttons/FixedButton';
 import Modal from '@/components/UI/Modal/Modal';
 import SelectGame from '@/components/Game/SelectGame';
@@ -23,24 +23,33 @@ type PageProps = {
 const Games: NextPage<PageProps> = ({ userData, savedGames }) => {
   const { userData: user } = useAuth();
 
-  const [openModal, setOpenModal] = useState(false);
-  const [currentGames, setCurrentGames] = useState(savedGames);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
 
   const [gameCode, setGameCode] = useState('');
 
   const handleClose = () => {
-    setOpenModal(false);
+    setIsModalOpen(false);
     setPageNumber(1);
     setGameCode('');
   };
 
-  const removeGame = (docId: string) => {
-    // const temp = currentGames.filter((gameItem) => {
-    //   return docId !== gameItem.docId;
-    // });
-    // setCurrentGames(temp);
-  };
+  console.log(savedGames);
+
+  const usersGames = Object.keys(savedGames).map((key) => {
+    return [...Array(savedGames[key].gameCode)].map((_, index) => {
+      return (
+        <GameItem
+          game={savedGames[key]}
+          key={index}
+          username={userData.username}
+          setIsModalOpen={setIsModalOpen}
+          setGameCode={setGameCode}
+          setPageNumber={setPageNumber}
+        />
+      );
+    });
+  });
 
   return (
     <div>
@@ -56,26 +65,14 @@ const Games: NextPage<PageProps> = ({ userData, savedGames }) => {
           <div className="flex justify-end mt-2 mr-1">
             {userData.username === user.username ? (
               <FixedButton
-                name="Update Games"
-                onClick={() => setOpenModal(true)}
+                name="Add Games"
+                onClick={() => setIsModalOpen(true)}
               />
             ) : null}
           </div>
-          <div>
-            {/* {currentGames.map((game, index) => {
-              return (
-                <GameItem
-                  game={game}
-                  key={index}
-                  username={userData.username}
-                  removeGame={removeGame}
-                  setBackdrop={setOpenModal}
-                />
-              );
-            })} */}
-          </div>
+          <div>{usersGames}</div>
         </div>
-        <Modal isOpen={openModal} closeModal={handleClose}>
+        <Modal isOpen={isModalOpen} closeModal={handleClose}>
           <>
             {
               {
@@ -83,14 +80,16 @@ const Games: NextPage<PageProps> = ({ userData, savedGames }) => {
                   <SelectGame
                     updatePage={(pageNumber) => setPageNumber(pageNumber)}
                     setGame={setGameCode}
-                    game={gameCode}
+                    gameCode={gameCode}
                   />
                 ),
                 2: (
                   <GameDetails
                     updatePage={(pageNumber) => setPageNumber(pageNumber)}
-                    game={gameCode}
+                    gameCode={gameCode}
                     setGame={setGameCode}
+                    gameData={savedGames[gameCode]}
+                    closeModal={handleClose}
                   />
                 ),
               }[pageNumber]

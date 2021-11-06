@@ -14,8 +14,8 @@ const validationSchema = yup.object({
 });
 
 const emptyValues = {
-  ingamename: '',
-  ingameid: '',
+  inGameName: '',
+  inGameId: '',
 };
 
 type Props = {
@@ -37,20 +37,7 @@ const GameForm: FC<Props> = ({
 }: Props) => {
   const { openSnackBar } = useUI();
 
-  const [snackbarData, setSnackbarData] = useState({
-    open: false,
-    message: { label: '', message: '' },
-    severity: 'success' as const,
-  });
-
-  const handleSnackbarClose = () => {
-    setSnackbarData({ ...snackbarData, open: false });
-  };
-
-  const saveGame = async (gameData: {
-    ingamename: string;
-    ingameid: string;
-  }) => {
+  const saveGame = async (gameData: GamerData) => {
     try {
       await db
         .collection('gamers')
@@ -65,10 +52,7 @@ const GameForm: FC<Props> = ({
     }
   };
 
-  const updateGame = async (gameData: {
-    ingamename: string;
-    ingameid: string;
-  }) => {
+  const updateGame = async (gameData: GamerData) => {
     try {
       await db.collection('gamers').doc(oldValues?.docId).update(gameData);
       openSnackBar({
@@ -88,12 +72,12 @@ const GameForm: FC<Props> = ({
     },
     validationSchema: validationSchema,
     onSubmit: (values, { setSubmitting }) => {
-      const { ingameid, ingamename } = values;
+      const { inGameId, inGameName } = values;
       setSubmitting(true);
       if (oldValues) {
-        updateGame({ ingameid, ingamename });
+        updateGame({ inGameId, inGameName });
       } else {
-        saveGame({ ingameid, ingamename });
+        saveGame({ inGameId, inGameName });
       }
       addToCurrentGames(values);
       setSubmitting(false);
@@ -130,18 +114,18 @@ const GameForm: FC<Props> = ({
             <NormalInput
               name="ingamename"
               placeHolder="In Game Name"
-              value={formik.values.ingamename}
+              value={formik.values.inGameName}
               onChangeHandler={formik.handleChange}
-              error={Boolean(formik.errors.ingamename)}
-              errorMessage={formik.errors.ingamename}
+              error={Boolean(formik.errors.inGameName)}
+              errorMessage={formik.errors.inGameName}
             />
             <NormalInput
               name="ingameid"
               placeHolder="In Game ID"
-              value={formik.values.ingameid}
+              value={formik.values.inGameId}
               onChangeHandler={formik.handleChange}
-              error={Boolean(formik.errors.ingameid)}
-              errorMessage={formik.errors.ingameid}
+              error={Boolean(formik.errors.inGameId)}
+              errorMessage={formik.errors.inGameId}
             />
           </div>
           <div className="flex justify-end mt-2 mr-1 md:mr-8">

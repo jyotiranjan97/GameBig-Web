@@ -6,10 +6,10 @@ import SelectDropDown from '../UI/Select/SelectDropDown';
 type Props = {
   updatePage: (page: number) => void;
   setGame: Dispatch<SetStateAction<string>>;
-  game: string;
+  gameCode: string;
 };
 
-const SelectGame: FC<Props> = ({ updatePage, setGame, game }) => {
+const SelectGame: FC<Props> = ({ updatePage, setGame, gameCode }) => {
   function nextClickHandler() {
     updatePage(2);
   }
@@ -31,7 +31,7 @@ const SelectGame: FC<Props> = ({ updatePage, setGame, game }) => {
         <FixedButton
           name="Next"
           onClick={nextClickHandler}
-          isDisabled={game === ''}
+          isDisabled={gameCode === ''}
         />
       </section>
       <p className="text-gray-500 mt-5 font-semibold">
