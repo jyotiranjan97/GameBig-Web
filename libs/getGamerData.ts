@@ -2,7 +2,7 @@ import { firebaseAdmin } from '../firebase/firebaseAdmin';
 import { GamerData } from '../utilities/types';
 
 const getGamerData = async (username: string) => {
-  const savedGames: Array<GamerData> = [];
+  const savedGames: Record<string, GamerData> = {};
   await firebaseAdmin
     .firestore()
     .collection('gamers')
@@ -11,7 +11,12 @@ const getGamerData = async (username: string) => {
     .then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         const { ingamename, ingameid, gameCode } = doc.data();
-        savedGames.push({ ingamename, ingameid, gameCode, docId: doc.id });
+        savedGames[gameCode] = {
+          ingamename,
+          ingameid,
+          gameCode,
+          docId: doc.id,
+        };
       });
     })
     .catch((error) => {
