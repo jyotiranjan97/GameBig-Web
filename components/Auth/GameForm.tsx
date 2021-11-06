@@ -9,8 +9,8 @@ import NormalInput from '../UI/Inputs/NormalInput';
 import { useUI } from '@/context/uiContext';
 
 const validationSchema = yup.object({
-  ingamename: yup.string().required('In Game Name is required'),
-  ingameid: yup.string().required('In Game Id is required'),
+  inGameName: yup.string().required('In Game Name is required'),
+  inGameId: yup.string().required('In Game Id is required'),
 });
 
 const emptyValues = {
@@ -112,7 +112,7 @@ const GameForm: FC<Props> = ({
         <form className="col-span-2 md:pt-10">
           <div className="flex flex-col justify-around">
             <NormalInput
-              name="ingamename"
+              name="inGameName"
               placeHolder="In Game Name"
               value={formik.values.inGameName}
               onChangeHandler={formik.handleChange}
@@ -120,7 +120,7 @@ const GameForm: FC<Props> = ({
               errorMessage={formik.errors.inGameName}
             />
             <NormalInput
-              name="ingameid"
+              name="inGameId"
               placeHolder="In Game ID"
               value={formik.values.inGameId}
               onChangeHandler={formik.handleChange}
