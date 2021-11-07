@@ -32,10 +32,15 @@ export interface UserData {
 export interface GamerData {
   docId?: string | undefined;
   gameCode?: string | undefined;
-  ingamename: string | undefined;
-  ingameid: string | undefined;
+  inGameName: string | undefined;
+  inGameId: string | undefined;
   username?: string | undefined;
   uid: string;
+  kd?: string | undefined;
+  highestTier?: string | undefined;
+  damage?: string | undefined;
+  kills?: string | undefined;
+  about?: string | undefined;
 }
 export interface TeamType {
   teamName: string;
