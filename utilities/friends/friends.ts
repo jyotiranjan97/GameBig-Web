@@ -15,7 +15,7 @@ export interface FriendRequest {
     games?: string[];
     uid: string;
   };
-  to: string;
-  from: string;
+  toUid: string;
+  fromUid: string;
   id?: string;
 }
