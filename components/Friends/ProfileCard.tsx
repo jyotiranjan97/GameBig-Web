@@ -96,7 +96,6 @@ const ProfileCard = ({
         ) : null}
         <span className="text-indigo-600 text-xl">{name}</span>
         <span className="text-gray-300 text-xl">{username}</span>
-        <span className="text-gray-300 text-center font-sans">{about}</span>
         <div className="flex flex-wrap justify-center">
           {games.map((game: string, index: number) => (
             <GameBadge key={index} gamecode={game} />
