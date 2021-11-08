@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import Head from 'next/head';
-import Aux from '../hoc/Auxiliary/Auxiliary';
 import EventCard from '../components/Event/EventCard/EventCard';
 import { GetServerSideProps } from 'next';
 import { fetchAllEventData } from '../libs/getAllEvents';
@@ -12,6 +11,7 @@ import Modal from '@/components/UI/Modal/Modal';
 import FixedButton from '@/components/UI/Buttons/FixedButton';
 import FilterIcon from '@/components/UI/Icons/EventIcons/FilterIcon';
 import { db } from 'firebase/firebaseClient';
+import Feedback from '@/components/Feedback/Feedback';
 
 interface Props {
   events: EventData[];
@@ -71,52 +71,46 @@ export default function Home({ events: eventsFromProps }: Props) {
         <link rel="icon" href="/favicon.ico" />
         <link rel="manifest" href="/manifest.json" />
       </Head>
-      <Aux>
-        <div>
-          <div className="md:w-2/3 xl:w-1/2 mx-auto flex justify-end mt-4 mb-5">
-            <section
-              className={
-                'bg-gray-900 hover:bg-gray-900/60 flex justify-evenly items-center ' +
-                'cursor-pointer w-28 h-auto rounded-md py-1 mx-4 md:mx-0'
-              }
-              onClick={() => {
-                setIsModalOpen(true);
+      <div>
+        <div className="md:w-2/3 xl:w-1/2 mx-auto flex justify-end mt-4 mb-5">
+          <section
+            className={
+              'bg-gray-900 hover:bg-gray-900/60 flex justify-evenly items-center ' +
+              'cursor-pointer w-28 h-auto rounded-md py-1 mx-4 md:mx-0'
+            }
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
+          >
+            <span className=" text-lg text-gray-300">Filter</span>
+            <FilterIcon size={32} />
+          </section>
+        </div>
+        {events.map((eventItem: EventData) => (
+          <EventCard key={eventItem.id} data={eventItem} isOrganizer={false} />
+        ))}
+        <Feedback />
+        <Modal isOpen={isModalOpen} closeModal={() => setIsModalOpen(false)}>
+          <div
+            className={'w-5/6 mx-auto grid grid-cols-1 sm:grid-cols-2 gap-y-4'}
+          >
+            <MultiSelect
+              label="Game"
+              name="game"
+              propToShow="id"
+              values={selectedGames}
+              handleChange={(item) => {
+                if (selectedGames.includes(item.id)) {
+                  setSelectedGames(
+                    selectedGames.filter((i: string) => i !== item.id)
+                  );
+                } else {
+                  setSelectedGames([...selectedGames, item.id]);
+                }
               }}
-            >
-              <span className=" text-lg text-gray-300">Filter</span>
-              <FilterIcon size={32} />
-            </section>
-          </div>
-          {events.map((eventItem: EventData) => (
-            <EventCard
-              key={eventItem.id}
-              data={eventItem}
-              isOrganizer={false}
+              items={GAMES}
             />
-          ))}
-          <Modal isOpen={isModalOpen} closeModal={() => setIsModalOpen(false)}>
-            <div
-              className={
-                'w-5/6 mx-auto grid grid-cols-1 sm:grid-cols-2 gap-y-4'
-              }
-            >
-              <MultiSelect
-                label="Game"
-                name="game"
-                propToShow="id"
-                values={selectedGames}
-                handleChange={(item) => {
-                  if (selectedGames.includes(item.id)) {
-                    setSelectedGames(
-                      selectedGames.filter((i: string) => i !== item.id)
-                    );
-                  } else {
-                    setSelectedGames([...selectedGames, item.id]);
-                  }
-                }}
-                items={GAMES}
-              />
-              {/* <MultiSelect
+            {/* <MultiSelect
                 label="Mode"
                 name="mode"
                 propToShow="name"
@@ -148,13 +142,12 @@ export default function Home({ events: eventsFromProps }: Props) {
                 }}
                 items={SCREAMS}
               /> */}
-            </div>
-            <section className="flex justify-end w-3/4 md:w-2/3 mx-auto">
-              <FixedButton name="Apply" onClick={handleFilter} />
-            </section>
-          </Modal>
-        </div>
-      </Aux>
+          </div>
+          <section className="flex justify-end w-3/4 md:w-2/3 mx-auto">
+            <FixedButton name="Apply" onClick={handleFilter} />
+          </section>
+        </Modal>
+      </div>
     </div>
   );
 }
