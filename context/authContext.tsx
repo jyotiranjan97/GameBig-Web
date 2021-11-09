@@ -103,12 +103,15 @@ function useProviderAuth() {
   };
   useEffect(() => {
     getLocalUser();
-    const user = firebase.auth().currentUser;
-    if (user) {
-      handleSignIn(user);
-    } else {
-      setUserData({} as UserData);
-    }
+    return firebase.auth().onIdTokenChanged(async (user) => {
+      if (!user) {
+        nookies.set(undefined, 'token', '', {});
+        localforage.removeItem('user');
+        return;
+      } else {
+        handleSignIn(user);
+      }
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
