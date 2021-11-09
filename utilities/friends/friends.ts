@@ -3,7 +3,6 @@ export interface FriendRequest {
     name: string;
     photoURL: string;
     username: string;
-    about?: string;
     games?: string[];
     uid: string;
   };
@@ -11,11 +10,20 @@ export interface FriendRequest {
     name: string;
     photoURL: string;
     username: string;
-    about?: string;
     games?: string[];
     uid: string;
   };
-  toUid: string;
-  fromUid: string;
+  senderUid: string;
+  receiverUid: string;
   id?: string;
 }
+
+export type ProfileCardData = {
+  photoURL?: string;
+  name?: string;
+  username: string;
+  games: string[];
+  uid: string;
+  receiverUid?: string;
+  id?: string;
+};
