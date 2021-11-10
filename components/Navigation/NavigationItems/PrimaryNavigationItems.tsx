@@ -72,6 +72,7 @@ export default function PrimaryNavigationItems() {
         toolTip="Join"
       >
         <JoinIcon isActive={router.pathname === '/join'} size={32} />
+
       </NavigationItem>
       <NavigationItem
         href="/messages"
