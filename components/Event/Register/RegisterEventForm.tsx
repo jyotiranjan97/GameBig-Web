@@ -37,7 +37,7 @@ export default function RegisterEventForm({
       const teams: Array<TeamType> = [];
       if (userData.uid) {
         db.collection('teams')
-          .where('gamers', 'array-contains-any', [userData.uid])
+          .where('uids', 'array-contains-any', [userData.uid])
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {

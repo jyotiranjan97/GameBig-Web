@@ -44,7 +44,7 @@ export interface GamerData {
 }
 export interface TeamType {
   teamName: string;
-  gamers: Array<string>;
+  gamers: { uid: string; username: string; photoURL: string }[];
   inGameLead: string;
   docId?: string;
 }
