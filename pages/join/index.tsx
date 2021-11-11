@@ -20,15 +20,23 @@ const JoinPage: NextPage = () => {
       <div>
         <div
           className={
-            'flex justify-between rounded-lg bg-gray-900 ' +
+            'flex justify-between rounded-lg bg-gray-900 h-14 ' +
             'md:w-2/3 xl:w-1/2 sm:mx-auto mx-5 mt-4 mb-5 px-8 py-2 relative '
           }
         >
-          <span className="text-lg text-gray-300">My Posts</span>
+          <span
+            className={
+              'text-lg font-semibold tracking-wide text-gray-300 absolute ' +
+              'cursor-pointer hover:text-indigo-600 hover:bg-indigo-200 ' +
+              'px-3 py-1.5 top-2 left-2.5 rounded-md active:bg-indigo-300'
+            }
+          >
+            My Posts
+          </span>
           <span
             className={
               'text-lg font-semibold tracking-wide text-gray-300 absolute rounded-md ' +
-              'right-1 flex justify-center items-center px-2 py-1 top-1 ' +
+              'right-2.5 flex justify-center items-center px-2 py-1.5 top-2 ' +
               'cursor-pointer bg-indigo-600 hover:bg-indigo-700 active:opacity-70'
             }
             onClick={() => setIsModalOpen(true)}
