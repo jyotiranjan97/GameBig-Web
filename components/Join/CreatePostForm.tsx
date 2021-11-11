@@ -9,6 +9,7 @@ import { validationSchema } from '@/utilities/join/teamUpPostFormValidator';
 import { TeamUpSchemaType } from '@/utilities/join/teamUpTypes';
 import { createNewPost } from '@/libs/teamupQueries';
 import { useUI } from '@/context/uiContext';
+import { useAuth } from '@/context/authContext';
 
 type Props = {
   closeModal: () => void;
@@ -35,12 +36,13 @@ const CreatePostForm: FC<Props> = ({ closeModal }) => {
   };
 
   const { openSnackBar } = useUI();
+  const { userData } = useAuth();
 
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      const isCreated = await createNewPost(values);
+      const isCreated = await createNewPost(values, userData);
       if (isCreated) {
         openSnackBar({
           type: 'success',
