@@ -81,7 +81,7 @@ export default function GamerDetails({
         team.gamers.map((gamer, index) => (
           <GamerItem
             key={index}
-            serialNo={index + 1}
+            serialNo={index + 1} //todo
             username={gamer}
             gameCode={gameCode}
             updateGamer={updateGamer}
