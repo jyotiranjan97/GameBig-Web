@@ -12,7 +12,6 @@ export default function ParticipantList({ eventId }: Props) {
 
   const teamsArr = useCallback(async () => {
     const teams = await fetchParticipatedTeams(eventId);
-    console.log(teams);
     setParticipants(teams);
   }, [eventId]);
 
@@ -30,11 +29,13 @@ export default function ParticipantList({ eventId }: Props) {
           No Teams registered yet
         </span>
       ) : (
-        participants.map((team) => (
-          <div key={team.docId}>
-            <TeamItem team={team} />
-          </div>
-        ))
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {participants.map((team) => (
+            <div key={team.docId}>
+              <TeamItem team={team} />
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
