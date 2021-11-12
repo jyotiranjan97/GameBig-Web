@@ -77,7 +77,7 @@ export default function GamerDetails({
         </span>
         <FixedButton onClick={handleRegister} name="Register" />
       </section>
-      {team &&
+      {/* {team &&
         team.gamers.map((gamer, index) => (
           <GamerItem
             key={index}
@@ -86,7 +86,7 @@ export default function GamerDetails({
             gameCode={gameCode}
             updateGamer={updateGamer}
           />
-        ))}
+        ))} */}
     </div>
   );
 }
