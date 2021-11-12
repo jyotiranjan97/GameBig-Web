@@ -74,7 +74,7 @@ export default function Event({ orgId, eventData }: Props) {
         {isOrganizer ? (
           <div>
             <SendNotification eventData={eventData} />
-            <ParticipantList tId={eventData.id} />
+            <ParticipantList eventId={eventData.id} />
           </div>
         ) : (
           (null as any)
