@@ -1,9 +1,10 @@
 import Head from 'next/head';
+import { ParsedUrlQuery } from 'querystring';
 import nookies from 'nookies';
 import { GetServerSidePropsContext } from 'next';
 import { firebaseAdmin } from '../../../firebase/firebaseAdmin';
 import Aux from '../../../hoc/Auxiliary/Auxiliary';
-import { UserData, GamerData } from '../../../utilities/types';
+import { UserData } from '../../../utilities/types';
 import ProfileHeader from '../../../components/Profile/ProfileHeader';
 import getUser from '../../../libs/getUser';
 import { EventData } from '../../../utilities/eventItem/types';
@@ -40,6 +41,10 @@ export default function Home({ events, userData }: Props) {
   );
 }
 
+interface IParams extends ParsedUrlQuery {
+  username: string;
+}
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   let events: EventData[] = [];
   let userData: UserData = {} as UserData;
@@ -49,19 +54,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       .auth()
       .verifyIdToken(cookies.token)
       .then(async () => {
-        const { username } = context.query;
-        if (typeof username == 'string') {
-          userData = await getUser(username);
-          events = await fetchEventsDataByUsername(username);
-        }
+        const { username } = context.params as IParams;
+        userData = await getUser(username);
+        events = await fetchEventsDataByUsername(username);
       });
-    return {
-      props: { userData, events },
-    };
   } catch (err) {
     context.res.writeHead(302, { Location: '/auth' });
     context.res.end();
     console.log('Error getting server side props:', err);
-    return { props: {} as never };
   }
+
+  return {
+    props: { userData, events },
+  };
 }
