@@ -66,14 +66,19 @@ export const fetchEventsDataByPageId = async (pageId: string) => {
   return eventDatas;
 };
 
-export const fetchEventsDataByUsername = async (username: string) => {
+export const fetchEventsDataByUid = async (uid: string) => {
   let eventDatas = [] as EventData[];
-  const eventRef = firebaseAdmin.firestore().collection('events');
-  const query = eventRef.where('gamerUsernames', 'array-contains', username);
+  const eventRef = firebaseAdmin
+    .firestore()
+    .collection('users')
+    .doc(uid)
+    .collection('events');
   try {
-    const querySnapshot = await query.get();
+    const querySnapshot = await eventRef.get();
     querySnapshot.forEach((doc) => {
       const data = doc.data();
+      console.log(data);
+
       const eventData = {
         id: doc.id,
         gameCode: data.gameCode,
@@ -83,8 +88,8 @@ export const fetchEventsDataByUsername = async (username: string) => {
         noOfSlots: data.noOfSlots,
         description: data.description,
         prize: data.prize,
-        startTime: data.startTime.toDate().toISOString(),
-        createdAt: data.createdAt.toDate().toISOString(),
+        startTime: data.startTime,
+        createdAt: data.createdAt,
         linkedPageId: data.linkedPageId,
         linkedPageName: data.linkedPageName,
       };

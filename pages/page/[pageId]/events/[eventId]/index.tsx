@@ -60,7 +60,6 @@ export default function Event({ pageId, eventData }: Props) {
       >
         <EventDetails isPageOwner={isPageOwner} data={eventData} />
 
-        {console.log(uid)}
         {uid ? (
           <RespondToEvent
             pageId={pageId}
