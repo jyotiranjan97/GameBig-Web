@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { ParsedUrlQuery } from 'querystring';
@@ -8,11 +8,17 @@ import RegisterEventForm from '../../../../../components/Event/Register/Register
 import SendNotification from '../../../../../components/Event/Notification/SendNotification';
 import { useAuth } from '../../../../../context/authContext';
 import Aux from '../../../../../hoc/Auxiliary/Auxiliary';
-import { fetchEventDataById } from '../../../../../libs/getEventData';
+import {
+  fetchEventDataById,
+  fetchParticipatedTeams,
+} from '../../../../../libs/getEventData';
 import { EventData } from '../../../../../utilities/eventItem/types';
 import SoloRegistrationForm from '../../../../../components/Event/Register/SoloRegistrationForm';
 import { db } from '../../../../../firebase/firebaseClient';
 import router from 'next/router';
+import { TeamType } from '@/utilities/types';
+import EventResultForm from '@/components/Event/Result/EventResultForm';
+import EventResults from '@/components/Event/Result/EventResults';
 
 interface Props {
   pageId: string;
@@ -24,6 +30,7 @@ export default function Event({ pageId, eventData }: Props) {
     userData: { linkedPageId, uid },
   } = useAuth();
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
+  const [participants, setParticipants] = useState<TeamType[]>([]);
   const [teamId, setTeamId] = useState<string>('');
 
   let isPageOwner = linkedPageId === pageId ? true : false;
@@ -55,6 +62,15 @@ export default function Event({ pageId, eventData }: Props) {
     router.push('/');
   };
 
+  const teamsArr = useCallback(async () => {
+    const teams = await fetchParticipatedTeams(eventData.id);
+    setParticipants(teams);
+  }, [eventData.id]);
+
+  useEffect(() => {
+    teamsArr();
+  }, [teamsArr]);
+
   return (
     <Aux>
       <Head>
@@ -71,10 +87,15 @@ export default function Event({ pageId, eventData }: Props) {
         }
       >
         <EventDetails isPageOwner={isPageOwner} data={eventData} />
+        <EventResults eventId={eventData.id} />
         {isPageOwner ? (
           <div>
             <SendNotification eventData={eventData} />
-            <ParticipantList eventId={eventData.id} />
+            <EventResultForm
+              eventId={eventData.id}
+              participants={participants}
+            />
+            <ParticipantList participants={participants} />
           </div>
         ) : (
           (null as any)
