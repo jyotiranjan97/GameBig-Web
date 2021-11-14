@@ -53,26 +53,23 @@ const RespondToEvent: FC<Props> = ({
         {
           Squad: (
             <RegisterEventForm
+              eventData={eventData}
               teamSize={4}
               setTeamId={setTeamId}
-              gameCode={eventData.gameCode}
-              eventId={eventData.id}
               setIsRegistered={setIsRegistered}
             />
           ),
           Duo: (
             <RegisterEventForm
+              eventData={eventData}
               teamSize={2}
               setTeamId={setTeamId}
-              gameCode={eventData.gameCode}
-              eventId={eventData.id}
               setIsRegistered={setIsRegistered}
             />
           ),
           Solo: (
             <SoloRegistrationForm
-              gameCode={eventData.gameCode}
-              tId={eventData.id}
+              eventData={eventData}
               setIsRegistered={setIsRegistered}
             />
           ),
