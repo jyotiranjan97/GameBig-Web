@@ -26,7 +26,7 @@ export default function Event({ pageId, eventData }: Props) {
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
   const [teamId, setTeamId] = useState<string>('');
 
-  let ispageanizer = linkedPageId === pageId ? true : false;
+  let isPageOwner = linkedPageId === pageId ? true : false;
 
   useEffect(() => {
     if (eventData.id && uid) {
