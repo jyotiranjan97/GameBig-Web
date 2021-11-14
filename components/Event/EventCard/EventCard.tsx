@@ -52,11 +52,7 @@ const EventCard: FC<Props> = ({ data, isPageOwner }: Props) => {
   }, [data.id, userData.uid]);
 
   const onForwardAction = () => {
-    if (userData.uid === '' || userData.uid === undefined) {
-      router.push('/auth');
-    } else {
-      router.push(`/page/${data.linkedPageId}/events/${data.id}/`);
-    }
+    router.push(`/page/${data.linkedPageId}/events/${data.id}/`);
   };
 
   return (
@@ -150,7 +146,7 @@ const EventCard: FC<Props> = ({ data, isPageOwner }: Props) => {
           }
         />
 
-        {!isPageOwner && (
+        {isPageOwner ? null : (
           <>
             {isRegistered ? (
               <TextButton
