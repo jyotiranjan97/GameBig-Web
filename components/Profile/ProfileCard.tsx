@@ -48,7 +48,7 @@ const ProfileCard: FC<Props> = ({ photoURL, username, uid, name }) => {
       },
     });
     openSnackBar({
-      message: `You are Following ${username}`,
+      message: `You are Following ${name}`,
       type: 'success',
       label: '',
     });
@@ -100,7 +100,7 @@ const ProfileCard: FC<Props> = ({ photoURL, username, uid, name }) => {
           }
           title={name}
         >
-          {name ? fullName : 'Not Given'}
+          {name ? fullName : 'NA'}
         </span>
         <span className="text-gray-400 text-xs sm:text-base font-medium">
           @{username}
