@@ -31,7 +31,6 @@ const People = ({ users }: Props) => {
           {users.map((user) => (
             <ProfileCard
               name={user.name}
-              games={[]}
               username={user.username}
               photoURL={user.photoURL}
               uid={user.uid}

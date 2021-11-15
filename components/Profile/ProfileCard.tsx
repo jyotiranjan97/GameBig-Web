@@ -1,13 +1,20 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useAuth } from '../../context/authContext';
 import { useUI } from '@/context/uiContext';
-import { ProfileCardData } from '../../utilities/people/people';
 import { follow, isFollowing } from '../../libs/follow';
 import FollowButton from '../UI/Buttons/FollowButton';
+import ProfileIcon from '../UI/Icons/NavIcons/ProfileIcon';
 
-const ProfileCard = ({ photoURL, username, uid, name }: ProfileCardData) => {
+type Props = {
+  photoURL: string | undefined;
+  name: string | undefined;
+  username: string;
+  uid: string;
+};
+
+const ProfileCard: FC<Props> = ({ photoURL, username, uid, name }) => {
   const { userData } = useAuth();
   const { openSnackBar } = useUI();
   const router = useRouter();
@@ -60,8 +67,8 @@ const ProfileCard = ({ photoURL, username, uid, name }: ProfileCardData) => {
       }
     >
       {/** Profile Pic */}
-      <section className="mb-3 h-20 w-20 md:h-40 md:w-40 relative mx-auto">
-        {photoURL ? (
+      {photoURL ? (
+        <section className="mb-3 h-20 w-20 md:h-40 md:w-40 relative mx-auto">
           <Image
             src={photoURL}
             alt="Profile Picture"
@@ -70,8 +77,17 @@ const ProfileCard = ({ photoURL, username, uid, name }: ProfileCardData) => {
             className="rounded-full cursor-pointer"
             onClick={onProfileCardClick}
           />
-        ) : null}
-      </section>
+        </section>
+      ) : (
+        <section
+          className={
+            'cursor-pointer flex justify-center items-center ' +
+            'h-20 w-20 md:h-40 md:w-40 mx-auto mb-3'
+          }
+        >
+          <ProfileIcon size={100} isActive={false} />
+        </section>
+      )}
 
       {/** Name and UserName */}
       <section
@@ -84,7 +100,7 @@ const ProfileCard = ({ photoURL, username, uid, name }: ProfileCardData) => {
           }
           title={name}
         >
-          {fullName}
+          {name ? fullName : 'Not Given'}
         </span>
         <span className="text-gray-400 text-xs sm:text-base font-medium">
           @{username}
@@ -92,13 +108,11 @@ const ProfileCard = ({ photoURL, username, uid, name }: ProfileCardData) => {
       </section>
 
       {/** Follow Button */}
-      {!following ? (
-        <FollowButton name="Follow" onClick={handleFollow} />
-      ) : (
+      {following ? (
         <div
           className={
             'flex justify-center items-center mx-auto mt-3 w-3/4 ' +
-            'bg-green-400/50 hover:bg-green-300/20 cursor-not-allowed ' +
+            'bg-green-500/30 hover:bg-green-300/20 cursor-default ' +
             'rounded-md py-1'
           }
         >
@@ -111,6 +125,8 @@ const ProfileCard = ({ photoURL, username, uid, name }: ProfileCardData) => {
             Following
           </span>
         </div>
+      ) : (
+        <FollowButton name="Follow" onClick={handleFollow} />
       )}
     </div>
   );
