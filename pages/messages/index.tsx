@@ -42,7 +42,6 @@ const Messages = () => {
       messageRooms.find((room) => {
         if (room.type === 'direct' && room.receiver[userData.uid].uid === uid) {
           setMessageRoomId(room.docId);
-          console.log(room.docId);
         }
       });
     };

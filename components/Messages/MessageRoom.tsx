@@ -17,8 +17,6 @@ const MessageRoom = ({
   lastMessage,
   onClick,
 }: Props) => {
-  console.log();
-
   return (
     <div
       onClick={() =>
