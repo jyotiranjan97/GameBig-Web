@@ -33,7 +33,7 @@ export default function PageIntro() {
         <ResponsiveButton name="Create Now!" onClick={createPageHandler} />
       </section>
 
-      <section className="mt-10">
+      <section className="mt-24">
         <h3
           className={
             'flex justify-start w-11/12 mx-auto mb-5 ' +
