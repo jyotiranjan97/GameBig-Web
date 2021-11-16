@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import ResponsiveButton from '@/components/UI/Buttons/ResponsiveButton';
 import { useAuth } from '@/context/authContext';
 import PageFAQ from './PageFAQ';
-import Feedback from '@/components/Feedback/Feedback';
 
 export default function PageIntro() {
   const router = useRouter();
@@ -48,7 +47,6 @@ export default function PageIntro() {
           **Page for clan is under development**
         </span>
       </section>
-      <Feedback />
     </div>
   );
 }
