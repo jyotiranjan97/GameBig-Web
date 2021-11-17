@@ -8,7 +8,7 @@ const withPWA = require('next-pwa');
 
 const { withSentryConfig } = require('@sentry/nextjs');
 
-module.exports = withPWA({
+const moduleExports = withPWA({
   pwa: {
     dest: 'public',
     disable: process.env.NODE_ENV === 'development',
@@ -18,7 +18,6 @@ module.exports = withPWA({
     locales: ['en'],
     defaultLocale: 'en',
   },
-  outputFileTracing: false,
   images: {
     domains: [
       'lh3.googleusercontent.com',
@@ -38,6 +37,7 @@ module.exports = withPWA({
     FIREBASE_MESSAGING_SENDER_ID: process.env.FIREBASE_MESSAGING_SENDER_ID,
     ALGOLIA_APPLICATION_ID: process.env.ALGOLIA_APPLICATION_ID,
     ALGOLIA_SEARCH_ONLY_API_KEY: process.env.ALGOLIA_SEARCH_ONLY_API_KEY,
+    SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
   },
 });
 
@@ -47,7 +47,7 @@ const sentryWebpackPluginOptions = {
   // recommended:
   //   release, url, org, project, authToken, configFile, stripPrefix,
   //   urlPrefix, include, ignore
-  authToken: process.env.SENTRY_AUTH_TOKEN,
+  authToken: SENTRY_AUTH_TOKEN,
   silent: true, // Suppresses all logs
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options.
@@ -55,4 +55,4 @@ const sentryWebpackPluginOptions = {
 
 // Make sure adding Sentry options is the last code to run before exporting, to
 // ensure that your source maps include changes from all other Webpack plugins
-// module.exports = withSentryConfig(moduleExports, sentryWebpackPluginOptions);
+module.exports = withSentryConfig(moduleExports, sentryWebpackPluginOptions);
