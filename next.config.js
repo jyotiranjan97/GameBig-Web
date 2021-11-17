@@ -8,7 +8,7 @@ const withPWA = require('next-pwa');
 
 const { withSentryConfig } = require('@sentry/nextjs');
 
-const moduleExports = withPWA({
+module.exports = withPWA({
   pwa: {
     dest: 'public',
     disable: process.env.NODE_ENV === 'development',
@@ -17,9 +17,6 @@ const moduleExports = withPWA({
   i18n: {
     locales: ['en'],
     defaultLocale: 'en',
-  },
-  sassOptions: {
-    includePaths: [path.join(__dirname, 'classes')],
   },
   outputFileTracing: false,
   images: {
@@ -58,4 +55,4 @@ const sentryWebpackPluginOptions = {
 
 // Make sure adding Sentry options is the last code to run before exporting, to
 // ensure that your source maps include changes from all other Webpack plugins
-module.exports = withSentryConfig(moduleExports, sentryWebpackPluginOptions);
+// module.exports = withSentryConfig(moduleExports, sentryWebpackPluginOptions);
