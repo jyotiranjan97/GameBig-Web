@@ -11,10 +11,6 @@ module.exports = withPWA({
     locales: ['en'],
     defaultLocale: 'en',
   },
-  reactStrictMode: true,
-  sassOptions: {
-    includePaths: [path.join(__dirname, 'classes')],
-  },
   images: {
     domains: [
       'lh3.googleusercontent.com',
@@ -34,5 +30,6 @@ module.exports = withPWA({
     FIREBASE_MESSAGING_SENDER_ID: process.env.FIREBASE_MESSAGING_SENDER_ID,
     ALGOLIA_APPLICATION_ID: process.env.ALGOLIA_APPLICATION_ID,
     ALGOLIA_SEARCH_ONLY_API_KEY: process.env.ALGOLIA_SEARCH_ONLY_API_KEY,
+    SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
   },
 });
