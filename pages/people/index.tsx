@@ -1,9 +1,10 @@
 import Head from 'next/head';
-import getUsers from '@/libs/getUsers';
 import { GetServerSidePropsContext } from 'next';
+import nookies from 'nookies';
 import ProfileCard from '../../components/Profile/ProfileCard';
 import Aux from '../../hoc/Auxiliary/Auxiliary';
 import { UserData } from '../../utilities/types';
+import { firebaseAdmin } from 'firebase/firebaseAdmin';
 
 type Props = {
   users: UserData[];
@@ -22,20 +23,21 @@ const People = ({ users }: Props) => {
         <link rel="manifest" href="/manifest.json" />
       </Head>
       <Aux>
-        <div className="flex flex-col">
-          <div className="xl:w-1/2 md:w-5/6 grid grid-cols-2 sm:grid-cols-3 gap-6 mt-4 pt-1 mx-auto">
-            {users.map((user) => (
-              <div key={user.uid}>
-                <ProfileCard
-                  name={user.name}
-                  games={[]}
-                  username={user.username}
-                  photoURL={user.photoURL}
-                  uid={user.uid}
-                />
-              </div>
-            ))}
-          </div>
+        <div
+          className={
+            'xl:w-1/2 lg:w-2/3 md:w-5/6 w-11/12 grid grid-cols-2 sm:grid-cols-3 ' +
+            'gap-3 sm:gap-5 mt-4 mx-auto'
+          }
+        >
+          {users.map((user) => (
+            <ProfileCard
+              name={user.name}
+              username={user.username}
+              photoURL={user.photoURL}
+              uid={user.uid}
+              key={user.uid}
+            />
+          ))}
         </div>
       </Aux>
     </div>
@@ -45,8 +47,41 @@ const People = ({ users }: Props) => {
 export default People;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  let users: UserData[] = [];
-  users = await getUsers();
+  let users: any[] = [];
+  let uid = '';
+
+  const cookies = nookies.get(context);
+  try {
+    await firebaseAdmin
+      .auth()
+      .verifyIdToken(cookies.token)
+      .then(async (user) => {
+        if (user) uid = user.uid;
+      });
+  } catch (error) {
+    console.log(error);
+  }
+
+  await firebaseAdmin
+    .firestore()
+    .collection('users')
+    .where('uid', '!=', uid)
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data) {
+          users.push({
+            ...data,
+            dob: data.dob ? data.dob.toDate().toISOString() : null,
+            docId: doc.id,
+          });
+        }
+      });
+    })
+    .catch((error) => {
+      console.log('Error getting documents: ', error);
+    });
   return {
     props: { users },
   };

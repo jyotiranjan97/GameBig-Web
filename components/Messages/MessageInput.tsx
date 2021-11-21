@@ -24,14 +24,20 @@ export default function MessageInput({
   const { userData } = useAuth();
 
   const createMessageRoom = async () => {
-    let roomId = '';
+    let roomId;
+
     try {
       await db
         .collection('messageRooms')
         .add({
           uids: [userData.uid, receivingUser.uid],
           receiver: {
-            [receivingUser.uid]: userData,
+            [receivingUser.uid]: {
+              uid: userData.uid,
+              username: userData.username,
+              name: userData.name,
+              photoURL: userData.photoURL,
+            },
             [userData.uid]: receivingUser,
           },
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -39,7 +45,7 @@ export default function MessageInput({
           lastMessage: message,
           type: 'direct',
         })
-        .then(function (docRef) {
+        .then((docRef) => {
           roomId = docRef.id;
         });
     } catch (error) {
@@ -67,7 +73,7 @@ export default function MessageInput({
   };
 
   const sendMessage = async () => {
-    if (message === '') return;
+    if (message.trim() === '') return;
 
     let roomId;
     if (!messageRoomId) {
@@ -82,6 +88,7 @@ export default function MessageInput({
         message: message,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });
+      setMessage('');
     } catch (e) {
       console.log(e);
     }
@@ -94,7 +101,7 @@ export default function MessageInput({
 
   return (
     <form
-      className="w-full pb-3 flex items-center justify-between pt-4"
+      className="w-full pb-3 flex items-center justify-between sticky pt-4"
       onSubmit={(e) => {
         e.preventDefault();
         sendMessage();
