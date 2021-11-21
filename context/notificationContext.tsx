@@ -1,16 +1,13 @@
-import React, { useEffect, useState, useContext, createContext } from 'react';
+import React, { useEffect, useState, createContext } from 'react';
 import localforage from 'localforage';
-import firebase, { db } from '../firebase/firebaseClient';
+import firebase from '../firebase/firebaseClient';
 import { updateFcmToken } from '@/libs/user';
-
-type LocalUser = {
-  uid: string;
-  username: string;
-} | null;
+import { useAuth } from './authContext';
 
 const notificationContext = createContext({ notices: [] });
 
 function useProviderNotification() {
+  const { userData } = useAuth();
   const [notices, setNotices] = useState<any>([]);
   useEffect(() => {
     if ('serviceWorker' in navigator) {
@@ -34,33 +31,32 @@ function useProviderNotification() {
             vapidKey: process.env.FIREBASE_MESSAGING_VAPID_KEY,
           })
           .then(async (token) => {
-            const currentToken = await localforage.getItem('fcmToken');
-            const user: LocalUser = await localforage.getItem('user');
-            if (token !== currentToken) {
+            const oldToken = await localforage.getItem('fcmToken');
+            if (token !== oldToken) {
               localforage.setItem('fcmToken', token);
-              if (user) updateFcmToken(user.uid, token);
+            }
+            if (userData.fcmToken !== token) {
+              updateFcmToken(userData.uid, token);
             }
           })
           .catch((err) => {
-            console.log('error', err);
+            console.log('error getting fcm token', err);
           });
       getToken();
-      navigator.serviceWorker.addEventListener('message', (message) => {
+      navigator.serviceWorker.addEventListener('message', async (message) => {
         const data = message.data['firebase-messaging-msg-data'];
+        console.log({ data });
+
         if (data) {
-          let notices = [];
-          let stringifiedNotices = localStorage.getItem('notices');
-          if (stringifiedNotices) {
-            notices = JSON.parse(stringifiedNotices);
-          }
-          notices.unshift(data);
-          localStorage.setItem('notices', JSON.stringify(notices));
+          const oldNotices: any = await localforage.getItem('notices');
+          const notices = oldNotices ? [data, ...oldNotices] : [data];
+          localforage.setItem('notices', notices);
         }
       });
     } catch (err) {
-      console.log('error', err);
+      console.log('error in fcm setup', err);
     }
-  }, []);
+  }, [userData.fcmToken, userData.uid]);
   return { notices };
 }
 

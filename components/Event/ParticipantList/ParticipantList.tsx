@@ -1,4 +1,4 @@
-import TeamItem from '@/components/Profile/TeamItem';
+import TeamItem from '@/components/Team/TeamItem';
 import { TeamType } from '@/utilities/types';
 import { useEffect, useState, useCallback } from 'react';
 import { fetchParticipatedTeams } from '../../../libs/getEventData';

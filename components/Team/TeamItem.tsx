@@ -2,7 +2,7 @@ import { useUI } from '@/context/uiContext';
 import { db } from '../../firebase/firebaseClient';
 import { TeamType } from '../../utilities/types';
 import TextButton from '../UI/Buttons/TextButton';
-import HorizontalProfile from './HorizontalProfile';
+import HorizontalProfile from '../Profile/HorizontalProfile';
 
 type Props = {
   team: TeamType;

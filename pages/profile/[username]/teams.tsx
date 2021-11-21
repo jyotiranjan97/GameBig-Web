@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import CreateTeam from '../../../components/Profile/createTeam';
+import CreateTeam from '../../../components/Team/createTeam';
 import Aux from '../../../hoc/Auxiliary/Auxiliary';
 import { UserData, TeamType } from '../../../utilities/types';
-import TeamIntro from '../../../components/Profile/TeamIntro';
-import TeamItem from '../../../components/Profile/TeamItem';
+import TeamIntro from '../../../components/Team/TeamIntro';
+import TeamItem from '../../../components/Team/TeamItem';
 import ProfileHeader from '../../../components/Profile/ProfileHeader';
 import getUser from '../../../libs/getUser';
 import FixedButton from '../../../components/UI/Buttons/FixedButton';

@@ -2,7 +2,7 @@ import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { db } from '../../../firebase/firebaseClient';
 import { TeamType } from '../../../utilities/types';
 import { useAuth } from '../../../context/authContext';
-import CreateTeam from '../../Profile/createTeam';
+import CreateTeam from '../../Team/createTeam';
 import GamerDetails from './GamerDetails';
 import SelectDropDown from '../../UI/Select/SelectDropDown';
 import FixedButton from '../../UI/Buttons/FixedButton';
@@ -122,7 +122,6 @@ export default function RegisterEventForm({
             {
               1: (
                 <CreateTeam
-                  onCancel={closeModal}
                   handleSubmit={handleCreateTeam}
                   teamSize={teamSize}
                 />
