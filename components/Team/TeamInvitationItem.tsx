@@ -3,6 +3,7 @@ import { db } from '../../firebase/firebaseClient';
 import { TeamType } from '../../utilities/types';
 import TextButton from '../UI/Buttons/TextButton';
 import HorizontalProfile from '../Profile/HorizontalProfile';
+import FixedButton from '../UI/Buttons/FixedButton';
 
 type Props = {
   team: TeamType;
@@ -19,7 +20,21 @@ export default function TeamItem({
 }: Props) {
   const { openSnackBar } = useUI();
 
-  const deleteTeam = async () => {
+  const deleteInvitation = async () => {
+    try {
+      await db.collection('teams').doc(team.docId).delete();
+      openSnackBar({
+        label: 'Deleted',
+        message: `${team.teamName} deleted!`,
+        type: 'success',
+      });
+      if (team.docId && removeTeam) removeTeam(team.docId);
+    } catch (err) {
+      console.log('err', err);
+    }
+  };
+
+  const acceptInvitation = async () => {
     try {
       await db.collection('teams').doc(team.docId).delete();
       openSnackBar({
@@ -51,6 +66,7 @@ export default function TeamItem({
       }
     >
       <h6 className="text-2xl text-indigo-600 mx-4 mb-2">{team.teamName}</h6>
+      <h6 className="text-lg text-gray-300 mx-4 mb-2">Gamers</h6>
       <div>
         {team.gamers.map((gamer, index) => (
           <div key={index}>
@@ -58,12 +74,20 @@ export default function TeamItem({
           </div>
         ))}
       </div>
-      {openModal ? (
-        <div className="flex justify-end">
-          <TextButton type="normal" name="Edit" onClick={handleEdit} />
-          <TextButton type="fail" name="Delete" onClick={deleteTeam} />
-        </div>
-      ) : null}
+      <h6 className="text-lg text-gray-300 mx-4 mb-2">Invited Gamers</h6>
+      <div>
+        {team.invitedGamers &&
+          team.invitedGamers.map((gamer, index) => (
+            <div key={index}>
+              <HorizontalProfile user={gamer} />
+            </div>
+          ))}
+      </div>
+
+      <div className="flex justify-end px-4 gap-4">
+        <TextButton type="fail" name="Delete" onClick={deleteInvitation} />
+        <FixedButton type="button" name="Accept" onClick={acceptInvitation} />
+      </div>
     </div>
   );
 }

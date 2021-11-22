@@ -1,45 +1,30 @@
 import { ChangeEvent, useState } from 'react';
-import { useFormik } from 'formik';
-import Image from 'next/image';
-import * as yup from 'yup';
 import { db } from '../../firebase/firebaseClient';
 import { BasicUserType, TeamType } from '../../utilities/types';
 import FormInput from '../UI/Inputs/FormInput';
 import FixedButton from '../UI/Buttons/FixedButton';
 import algoliaClient from '@/libs/algolia';
 import debounce from '@/libs/debounce';
-import SelectDropDown from '../UI/Select/SelectDropDown';
-import LoadingLottie from '../UI/Loaders/Dots';
 import { useUI } from '@/context/uiContext';
-import { getUserByUsername } from '@/libs/user';
 import { useAuth } from '@/context/authContext';
-import HorizontalProfile from '../Profile/HorizontalProfile';
-
-const validationSchema = yup.object({
-  teamName: yup.string().required('Team name is required'),
-  username: yup.string(),
-  inGameLead: yup.string().required('In Game Lead is required'),
-});
+import GamersList from './GamersList';
 
 type PropsType = {
   teamData?: TeamType;
-  teamSize?: number;
+  teamId: string;
   onCancel: () => void;
   handleSubmit?: (teamData: TeamType) => void;
   setPart: (num: number) => void;
 };
 
-const emptyValues = {
-  username: '',
-  teamName: '',
-  inGameLead: '',
-};
-
-export default function CreateTeam({ teamData, handleSubmit }: PropsType) {
+export default function CreateTeam({
+  teamData,
+  onCancel,
+  teamId,
+  setPart,
+}: PropsType) {
   const { userData } = useAuth();
   const { openSnackBar } = useUI();
-
-  const [loading, setLoading] = useState(false);
   const [gamers, setgamers] = useState<BasicUserType[]>(
     teamData?.gamers || [
       {
@@ -56,28 +41,34 @@ export default function CreateTeam({ teamData, handleSubmit }: PropsType) {
   const [query, setQuery] = useState('');
   const [searchResults, setSearchresults] = useState<BasicUserType[]>([]);
 
-  const addgamer = async (user: BasicUserType) => {
+  const inviteGamer = async (user: BasicUserType) => {
     if (
       invitedGamers.find((o) => (o.uid === user.uid ? true : false)) ||
       gamers.find((o) => (o.uid === user.uid ? true : false))
     ) {
-      setLoading(false);
       return;
     }
     setInvitedGamers([...invitedGamers, user]);
-    notifyUser(user.uid);
   };
 
   const notifyUser = async (uid: string) => {
     db.collection('users')
       .doc(uid)
-      .collection('notification')
-      .add({ data: { teamData }, type: 'TEAM_INVITE' });
+      .collection('notifications')
+      .add({
+        message: `${userData.name} invited you to join a team`,
+        type: 'TEAM_INVITE',
+      });
   };
 
-  const removegamer = (uid: string) => {
-    const newgamers = gamers.filter((gamer) => gamer.uid !== uid);
+  const removeGamer = (user: BasicUserType) => {
+    const newgamers = gamers.filter((gamer) => gamer.uid !== user.uid);
     setgamers(newgamers);
+  };
+
+  const removeInvitedGamer = (user: BasicUserType) => {
+    const gamers = invitedGamers.filter((gamer) => gamer.uid !== user.uid);
+    setInvitedGamers(gamers);
   };
 
   const searchUser = (query: string) => {
@@ -100,6 +91,26 @@ export default function CreateTeam({ teamData, handleSubmit }: PropsType) {
         });
         setSearchresults(results);
       });
+  };
+
+  const save = async () => {
+    db.collection('teams')
+      .doc(teamId)
+      .update({
+        gamers,
+        invitedGamers,
+        uids: gamers.map((gamer) => gamer.uid),
+        invitedUids: invitedGamers.map((gamer) => gamer.uid),
+      });
+    invitedGamers.map((user) => {
+      notifyUser(user.uid);
+    });
+    openSnackBar({
+      label: 'Invitation sent',
+      message: '',
+      type: 'success',
+    });
+    onCancel();
   };
 
   return (
@@ -130,73 +141,34 @@ export default function CreateTeam({ teamData, handleSubmit }: PropsType) {
               }}
             />
           </div>
-
-          {searchResults.length > 0 && (
-            <div className="w-full flex flex-col">
-              <span>Search Results</span>
-              {searchResults.map((gamer, index) => (
-                <div
-                  key={index}
-                  className="w-full flex items-center justify-between my-1 md:pr-4 rounded-md bg-gray-800"
-                >
-                  <HorizontalProfile user={gamer} />
-                  <span
-                    className="bg-indigo-600 py-2 px-4 mr-3 rounded cursor-pointer"
-                    onClick={() => {
-                      console.log(gamer);
-                    }}
-                  >
-                    Invite
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
+          <GamersList
+            header="Search results"
+            gamers={searchResults}
+            handleItemClick={inviteGamer}
+            buttonText="Invite"
+            highLightButton={true}
+          />
         </div>
         <div className="flex flex-col mx-8">
-          <div className="w-full flex flex-col">
-            <span>Gamers</span>
-            {gamers.map((gamer, index) => (
-              <div
-                key={index}
-                className="w-full flex items-center justify-between my-1 md:pr-4 rounded-md bg-gray-800"
-              >
-                <HorizontalProfile user={gamer} />
-                {gamer.uid !== userData.uid ? (
-                  <span
-                    className="hover:bg-gray-700 py-2 px-4 rounded"
-                    onClick={() => {
-                      removegamer(gamer.uid);
-                    }}
-                  >
-                    Remove
-                  </span>
-                ) : null}
-              </div>
-            ))}
-          </div>
-          <div className="w-full flex flex-col">
-            <span>Invited Gamers</span>
-            {invitedGamers.map((gamer, index) => (
-              <div
-                key={index}
-                className="w-full flex items-center justify-between my-1 md:pr-4 rounded-md bg-gray-800"
-              >
-                <HorizontalProfile user={gamer} />
-                {gamer.uid !== userData.uid ? (
-                  <span
-                    className="hover:bg-gray-700 py-2 px-4 rounded"
-                    onClick={() => {
-                      removegamer(gamer.uid);
-                    }}
-                  >
-                    Remove
-                  </span>
-                ) : null}
-              </div>
-            ))}
-          </div>
+          <GamersList
+            header="Invited Gamers"
+            gamers={invitedGamers}
+            handleItemClick={removeInvitedGamer}
+            buttonText="Remove"
+            highLightButton={false}
+          />
+          <GamersList
+            header="Gamers"
+            gamers={gamers}
+            handleItemClick={removeGamer}
+            buttonText="Remove"
+            highLightButton={false}
+          />
         </div>
+      </div>
+      <div className="flex justify-evenly w-full py-8">
+        <FixedButton type="submit" name="Previous" onClick={() => setPart(0)} />
+        <FixedButton type="submit" name="Save" onClick={save} />
       </div>
     </div>
   );

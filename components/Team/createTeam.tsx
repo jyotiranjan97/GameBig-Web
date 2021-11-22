@@ -1,11 +1,7 @@
 import { useState } from 'react';
-import * as yup from 'yup';
 import TeamForm from './TeamForm';
 import GamerInvitation from './GamerInvitation';
-import { BasicUserType, TeamType } from '../../utilities/types';
-import FixedButton from '../UI/Buttons/FixedButton';
-import { useUI } from '@/context/uiContext';
-import { useAuth } from '@/context/authContext';
+import { TeamType } from '../../utilities/types';
 
 type PropsType = {
   teamData?: TeamType;
@@ -15,7 +11,8 @@ type PropsType = {
 };
 
 export default function CreateTeam({ teamData, onCancel }: PropsType) {
-  const [part, setPart] = useState<number>(1);
+  const [part, setPart] = useState<number>(0);
+  const [teamId, setTeamId] = useState<string>('');
   return (
     <div className="bg-gray-900 rounded-lg w-full">
       {
@@ -25,9 +22,16 @@ export default function CreateTeam({ teamData, onCancel }: PropsType) {
               teamData={teamData}
               onCancel={onCancel}
               setPart={setPart}
+              setTeamId={setTeamId}
             />
           ),
-          1: <GamerInvitation onCancel={onCancel} setPart={setPart} />,
+          1: (
+            <GamerInvitation
+              onCancel={onCancel}
+              setPart={setPart}
+              teamId={teamId}
+            />
+          ),
         }[part]
       }
     </div>

@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import CreateTeam from '../../../components/Team/createTeam';
+import CreateTeam from '../../../components/Team/CreateTeam';
 import Aux from '../../../hoc/Auxiliary/Auxiliary';
 import { UserData, TeamType } from '../../../utilities/types';
 import TeamIntro from '../../../components/Team/TeamIntro';
 import TeamItem from '../../../components/Team/TeamItem';
+import TeamInvitationItem from '../../../components/Team/TeamInvitationItem';
 import ProfileHeader from '../../../components/Profile/ProfileHeader';
 import getUser from '../../../libs/getUser';
 import FixedButton from '../../../components/UI/Buttons/FixedButton';
@@ -12,6 +13,7 @@ import { useAuth } from '../../../context/authContext';
 import Modal from '@/components/UI/Modal/Modal';
 import { db } from 'firebase/firebaseClient';
 import { fetchTeams } from '@/libs/fetchTeams';
+import { fetchInvitingTeams } from '@/libs/fetchInvitingteams';
 
 export default function Home({ userData }: { userData: UserData }) {
   const {
@@ -22,12 +24,16 @@ export default function Home({ userData }: { userData: UserData }) {
   const [selectedTeam, setSelectedTeam] = useState<TeamType | undefined>(
     undefined
   );
+  const [invitingTeams, setinvitingTeams] = useState<TeamType[]>([]);
 
   useEffect(() => {
     const getTeamData = async () => {
       if (uid) {
+        const invitingTeams = await fetchInvitingTeams(uid);
         const teams = await fetchTeams(uid);
+        setinvitingTeams(invitingTeams);
         setCurrentTeams(teams);
+        console.log({ invitingTeams });
       }
     };
     getTeamData();
@@ -67,18 +73,40 @@ export default function Home({ userData }: { userData: UserData }) {
           ) : null}
         </div>
         <div className="grid lg:grid-cols-2 grid-cols-1 gap-4">
-          {currentTeams.length !== 0 ? (
-            currentTeams.map((team, index) => {
-              return (
-                <TeamItem
-                  team={team}
-                  key={index}
-                  openModal={openModal}
-                  setSelectedTeam={setSelectedTeam}
-                  removeTeam={removeTeam}
-                />
-              );
-            })
+          {currentTeams.length !== 0 || invitingTeams.length !== 0 ? (
+            <div>
+              <span className="text-center text-lg text-gray-300 font-sans">
+                Invitations
+              </span>
+              {userData.uid === uid ? (
+                <div>
+                  {invitingTeams.map((team, index) => {
+                    return (
+                      <TeamInvitationItem
+                        team={team}
+                        key={index}
+                        setSelectedTeam={setSelectedTeam}
+                        removeTeam={removeTeam}
+                      />
+                    );
+                  })}
+                </div>
+              ) : null}
+              <span className="text-center text-lg text-gray-300 font-sans">
+                My teams
+              </span>
+              {currentTeams.map((team, index) => {
+                return (
+                  <TeamItem
+                    team={team}
+                    key={index}
+                    openModal={openModal}
+                    setSelectedTeam={setSelectedTeam}
+                    removeTeam={removeTeam}
+                  />
+                );
+              })}
+            </div>
           ) : (
             <TeamIntro openModal={openModal} />
           )}
