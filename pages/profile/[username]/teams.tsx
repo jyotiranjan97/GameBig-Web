@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import CreateTeam from '../../../components/Team/CreateTeam';
+import CreateTeam from '../../../components/Team/createTeam';
 import Aux from '../../../hoc/Auxiliary/Auxiliary';
 import { UserData, TeamType } from '../../../utilities/types';
 import TeamIntro from '../../../components/Team/TeamIntro';
