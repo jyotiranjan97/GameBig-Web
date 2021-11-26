@@ -31,30 +31,47 @@ export default function CreateTeam({
 }: PropsType) {
   const { userData } = useAuth();
   const { openSnackBar } = useUI();
-  const [teamName, setTeamname] = useState('');
+  const [teamName, setTeamname] = useState(teamData?.teamName || '');
 
-  const CreateTeam = async () => {
+  const save = async () => {
     const { name, photoURL, username, uid } = userData;
     const gamer = { name, photoURL, username, uid };
-    try {
-      await db
-        .collection('teams')
-        .add({
+    if (teamData) {
+      try {
+        await db.collection('teams').doc(teamData.docId).update({
           teamName,
-          gamers: [gamer],
-          uids: [uid],
-        })
-        .then((docRef) => {
-          setTeamId(docRef.id);
         });
-      openSnackBar({
-        label: 'Yay!',
-        message: `${teamName} added!`,
-        type: 'success',
-      });
-      setPart(1);
-    } catch (err) {
-      console.log('err', err);
+        if (teamData.docId) setTeamId(teamData.docId);
+        openSnackBar({
+          label: 'Yay!',
+          message: `${teamName} updated!`,
+          type: 'success',
+        });
+        setPart(1);
+      } catch (err) {
+        console.log('err', err);
+      }
+    } else {
+      try {
+        await db
+          .collection('teams')
+          .add({
+            teamName,
+            gamers: [gamer],
+            uids: [uid],
+          })
+          .then((docRef) => {
+            setTeamId(docRef.id);
+          });
+        openSnackBar({
+          label: 'Yay!',
+          message: `${teamName} added!`,
+          type: 'success',
+        });
+        setPart(1);
+      } catch (err) {
+        console.log('err', err);
+      }
     }
   };
 
@@ -75,7 +92,7 @@ export default function CreateTeam({
           />
         </div>
         <div className="flex justify-end md:w-1/2 w-11/12">
-          <FixedButton type="submit" name="Continue" onClick={CreateTeam} />
+          <FixedButton type="submit" name="Continue" onClick={save} />
         </div>
       </div>
     </div>

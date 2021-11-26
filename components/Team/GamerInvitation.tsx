@@ -52,7 +52,8 @@ export default function CreateTeam({
   };
 
   const notifyUser = async (uid: string) => {
-    db.collection('users')
+    await db
+      .collection('users')
       .doc(uid)
       .collection('notifications')
       .add({
@@ -94,7 +95,8 @@ export default function CreateTeam({
   };
 
   const save = async () => {
-    db.collection('teams')
+    await db
+      .collection('teams')
       .doc(teamId)
       .update({
         gamers,
