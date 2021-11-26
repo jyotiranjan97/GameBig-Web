@@ -83,7 +83,11 @@ export default function SelectDropDown({
               'font-sans font-semibold text-base text-gray-300 bg-gray-900 absolute '
             }
           >
-            {listItems}
+            {menuItems.length > 0 ? (
+              listItems
+            ) : (
+              <span className="mx-4">No Options!</span>
+            )}
           </ul>
         ) : null}
       </div>
