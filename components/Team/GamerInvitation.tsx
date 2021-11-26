@@ -3,11 +3,13 @@ import { db } from '../../firebase/firebaseClient';
 import { BasicUserType, TeamType } from '../../utilities/types';
 import FormInput from '../UI/Inputs/FormInput';
 import FixedButton from '../UI/Buttons/FixedButton';
-import algoliaClient from '@/libs/algolia';
+import { searchUser } from '@/libs/algolia';
 import debounce from '@/libs/debounce';
 import { useUI } from '@/context/uiContext';
 import { useAuth } from '@/context/authContext';
 import GamersList from './GamersList';
+import { notifyUser } from '@/libs/notifications';
+import { updateTeam } from '@/libs/teams';
 
 type PropsType = {
   teamData?: TeamType;
@@ -50,17 +52,6 @@ export default function CreateTeam({
     setInvitedGamers([...invitedGamers, user]);
   };
 
-  const notifyUser = async (uid: string) => {
-    await db
-      .collection('users')
-      .doc(uid)
-      .collection('notifications')
-      .add({
-        message: `${userData.name} invited you to join a team`,
-        type: 'TEAM_INVITE',
-      });
-  };
-
   const removeGamer = (user: BasicUserType) => {
     const newgamers = gamers.filter((gamer) => gamer.uid !== user.uid);
     setgamers(newgamers);
@@ -71,40 +62,23 @@ export default function CreateTeam({
     setInvitedGamers(gamers);
   };
 
-  const searchUser = (query: string) => {
-    if (query.trim() === '') return;
-    const index = algoliaClient.initIndex('users');
-    index
-      .search(query, {
-        attributesToRetrieve: ['username', 'name', 'uid', 'photoURL'],
-        hitsPerPage: 5,
-      })
-      .then(({ hits }) => {
-        const results: BasicUserType[] = [];
-        hits.map((hit: any) => {
-          results.push({
-            username: hit.username,
-            name: hit.name,
-            uid: hit.uid,
-            photoURL: hit.photoURL,
-          });
-        });
-        setSearchresults(results);
-      });
-  };
-
   const save = async () => {
-    await db
-      .collection('teams')
-      .doc(teamId)
-      .update({
-        gamers,
-        invitedGamers,
-        uids: gamers.map((gamer) => gamer.uid),
-        invitedUids: invitedGamers.map((gamer) => gamer.uid),
-      });
+    const newTeam = {
+      gamers,
+      invitedGamers,
+      uids: gamers.map((gamer) => gamer.uid),
+      invitedUids: invitedGamers.map((gamer) => gamer.uid),
+    };
+    updateTeam({
+      teamId: teamId,
+      team: newTeam,
+    });
     invitedGamers.map((user) => {
-      notifyUser(user.uid);
+      notifyUser({
+        uid: user.uid,
+        message: `${userData.name} invited you to join a team`,
+        type: 'TEAM',
+      });
     });
     openSnackBar({
       label: 'Invitation sent',
@@ -117,7 +91,10 @@ export default function CreateTeam({
   const handleChane = (e: ChangeEvent) => {
     const target = e.target as HTMLInputElement;
     setQuery(target.value);
-    const debouncedGetSearch = debounce(() => searchUser(target.value), 500);
+    const debouncedGetSearch = debounce(() => {
+      const users: BasicUserType[] = searchUser(target.value);
+      if (users.length > 0) setSearchresults(users);
+    }, 500);
     if (target.value.trim() !== '') {
       debouncedGetSearch();
     } else {

@@ -4,7 +4,6 @@ import Head from 'next/head';
 import { useAuth } from '@/context/authContext';
 import { db } from '../../firebase/firebaseClient';
 import Aux from '../../hoc/Auxiliary/Auxiliary';
-import { useUI } from '@/context/uiContext';
 
 interface Notification {
   docId?: string;
@@ -36,7 +35,7 @@ export default function Home() {
 
   const handleClick = (type: string) => {
     switch (type) {
-      case 'TEAM_INVITE':
+      case 'TEAM':
         router.push(`/profile/${userData.username}/teams`);
         break;
     }

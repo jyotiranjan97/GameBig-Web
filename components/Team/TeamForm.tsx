@@ -1,17 +1,11 @@
 import { useState, ChangeEvent } from 'react';
-import { useFormik } from 'formik';
-import Image from 'next/image';
-import * as yup from 'yup';
 import { db } from '../../firebase/firebaseClient';
-import { BasicUserType, TeamType } from '../../utilities/types';
+import { TeamType } from '../../utilities/types';
 import FormInput from '../UI/Inputs/FormInput';
 import FixedButton from '../UI/Buttons/FixedButton';
-import SelectDropDown from '../UI/Select/SelectDropDown';
-import LoadingLottie from '../UI/Loaders/Dots';
 import { useUI } from '@/context/uiContext';
-import { getUserByUsername } from '@/libs/user';
 import { useAuth } from '@/context/authContext';
-import HorizontalProfile from '../Profile/HorizontalProfile';
+import { updateTeam } from '@/libs/teams';
 
 type PropsType = {
   teamData?: TeamType;
@@ -33,10 +27,13 @@ export default function CreateTeam({
   const save = async () => {
     const { name, photoURL, username, uid } = userData;
     const gamer = { name, photoURL, username, uid };
-    if (teamData) {
+    if (teamData && teamData.docId) {
       try {
-        await db.collection('teams').doc(teamData.docId).update({
-          teamName,
+        updateTeam({
+          teamId: teamData.docId,
+          team: {
+            teamName,
+          },
         });
         if (teamData.docId) setTeamId(teamData.docId);
         openSnackBar({

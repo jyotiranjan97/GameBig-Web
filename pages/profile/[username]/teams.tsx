@@ -10,11 +10,8 @@ import getUser from '../../../libs/getUser';
 import FixedButton from '../../../components/UI/Buttons/FixedButton';
 import { useAuth } from '../../../context/authContext';
 import Modal from '@/components/UI/Modal/Modal';
-import { db } from 'firebase/firebaseClient';
 import { fetchTeams } from '@/libs/fetchTeams';
 import { fetchInvitingTeams } from '@/libs/fetchInvitingteams';
-import TextButton from '@/components/UI/Buttons/TextButton';
-import router from 'next/router';
 
 export default function Home({
   userData: userDataFromServer,

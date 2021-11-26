@@ -5,6 +5,8 @@ import TextButton from '../UI/Buttons/TextButton';
 import HorizontalProfile from '../Profile/HorizontalProfile';
 import FixedButton from '../UI/Buttons/FixedButton';
 import { useAuth } from '@/context/authContext';
+import { notifyUser } from '@/libs/notifications';
+import { updateTeam } from '@/libs/teams';
 
 type Props = {
   team: TeamType;
@@ -33,27 +35,28 @@ export default function TeamItem({
         (e) => e.uid !== userData.uid
       );
       try {
-        await db
-          .collection('teams')
-          .doc(team.docId)
-          .update({
+        if (team.docId) {
+          const newTeam = {
             ...team,
             invitedUids: updatedInvitedUids,
             invitedGamers: updatedInvitedGamers,
+          };
+          updateTeam({
+            teamId: team.docId,
+            team: newTeam,
           });
+        }
         openSnackBar({
           label: 'Deleted',
           message: `Invitation from ${team.teamName} is deleted!`,
           type: 'success',
         });
         team.uids.forEach((uid) => {
-          db.collection('users')
-            .doc(uid)
-            .collection('notifications')
-            .add({
-              message: `${userData.name} declined invitation to join ${team.teamName}`,
-              type: 'TEAM_LEAVE',
-            });
+          notifyUser({
+            uid,
+            message: `${userData.name} declined invitation to join ${team.teamName}`,
+            type: 'TEAM',
+          });
         });
         if (team.docId && removeTeam) removeTeam(team.docId);
       } catch (err) {
@@ -86,20 +89,23 @@ export default function TeamItem({
         invitedGamers: updatedInvitedGamers,
       };
       try {
-        await db.collection('teams').doc(team.docId).update(newteam);
+        if (team.docId) {
+          updateTeam({
+            teamId: team.docId,
+            team: newteam,
+          });
+        }
         openSnackBar({
           label: 'Accepted',
           message: `Invitation from ${team.teamName} is Accepted!`,
           type: 'success',
         });
         team.uids.forEach((uid) => {
-          db.collection('users')
-            .doc(uid)
-            .collection('notifications')
-            .add({
-              message: `${userData.name} accepted invitation to join ${team.teamName}`,
-              type: 'TEAM_LEAVE',
-            });
+          notifyUser({
+            uid,
+            message: `${userData.name} accepted invitation to join ${team.teamName}`,
+            type: 'TEAM',
+          });
         });
         if (team.docId && removeTeam) removeTeam(team.docId);
         if (addTeam) addTeam(newteam);
@@ -125,21 +131,23 @@ export default function TeamItem({
       if (team.gamers) {
         updatedGamers = team.gamers.filter((e) => e.uid !== userData.uid);
       }
-      db.collection('teams')
-        .doc(team.docId)
-        .update({
+      if (team.docId) {
+        const newteam = {
           ...team,
           uids: updatedUids,
           gamers: updatedGamers,
+        };
+        updateTeam({
+          teamId: team.docId,
+          team: newteam,
         });
+      }
       updatedUids.forEach((uid) => {
-        db.collection('users')
-          .doc(uid)
-          .collection('notifications')
-          .add({
-            message: `${userData.name} left ${team.teamName}`,
-            type: 'TEAM_LEAVE',
-          });
+        notifyUser({
+          uid,
+          message: `${userData.name} left ${team.teamName}`,
+          type: 'TEAM',
+        });
       });
       openSnackBar({
         label: 'Left',
