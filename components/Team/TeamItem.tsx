@@ -3,11 +3,14 @@ import { db } from '../../firebase/firebaseClient';
 import { TeamType } from '../../utilities/types';
 import TextButton from '../UI/Buttons/TextButton';
 import HorizontalProfile from '../Profile/HorizontalProfile';
+import FixedButton from '../UI/Buttons/FixedButton';
+import { useAuth } from '@/context/authContext';
 
 type Props = {
   team: TeamType;
   removeTeam?: (id: string) => void;
-  openModal?: (open: boolean) => void;
+  openModal?: () => void;
+  addTeam?: (team: TeamType) => void;
   setSelectedTeam?: (team: TeamType) => void;
 };
 
@@ -16,32 +19,136 @@ export default function TeamItem({
   removeTeam,
   openModal,
   setSelectedTeam,
+  addTeam,
 }: Props) {
   const { openSnackBar } = useUI();
+  const { userData } = useAuth();
 
-  const deleteTeam = async () => {
-    try {
-      await db.collection('teams').doc(team.docId).delete();
-      openSnackBar({
-        label: 'Deleted',
-        message: `${team.teamName} deleted!`,
-        type: 'success',
-      });
-      if (team.docId && removeTeam) removeTeam(team.docId);
-    } catch (err) {
-      console.log('err', err);
+  const deleteInvitation = async () => {
+    if (team.invitedGamers && team.invitedUids) {
+      const updatedInvitedUids = team.invitedUids.filter(
+        (e) => e !== userData.uid
+      );
+      const updatedInvitedGamers = team.invitedGamers.filter(
+        (e) => e.uid !== userData.uid
+      );
+      try {
+        await db
+          .collection('teams')
+          .doc(team.docId)
+          .update({
+            ...team,
+            invitedUids: updatedInvitedUids,
+            invitedGamers: updatedInvitedGamers,
+          });
+        openSnackBar({
+          label: 'Deleted',
+          message: `Invitation from ${team.teamName} is deleted!`,
+          type: 'success',
+        });
+        team.uids.forEach((uid) => {
+          db.collection('users')
+            .doc(uid)
+            .collection('notifications')
+            .add({
+              message: `${userData.name} declined invitation to join ${team.teamName}`,
+              type: 'TEAM_LEAVE',
+            });
+        });
+        if (team.docId && removeTeam) removeTeam(team.docId);
+      } catch (err) {
+        console.log('err', err);
+      }
+    }
+  };
+
+  const acceptInvitation = async () => {
+    if (team.invitedGamers && team.invitedUids) {
+      const updatedInvitedUids = team.invitedUids.filter(
+        (e) => e !== userData.uid
+      );
+      const updatedInvitedGamers = team.invitedGamers.filter(
+        (e) => e.uid !== userData.uid
+      );
+      const updatedGamers = [
+        ...team.gamers,
+        {
+          name: userData.name,
+          uid: userData.uid,
+          photoURL: userData.photoURL,
+          username: userData.username,
+        },
+      ];
+      const newteam: TeamType = {
+        ...team,
+        gamers: updatedGamers,
+        invitedUids: updatedInvitedUids,
+        invitedGamers: updatedInvitedGamers,
+      };
+      try {
+        await db.collection('teams').doc(team.docId).update(newteam);
+        openSnackBar({
+          label: 'Accepted',
+          message: `Invitation from ${team.teamName} is Accepted!`,
+          type: 'success',
+        });
+        team.uids.forEach((uid) => {
+          db.collection('users')
+            .doc(uid)
+            .collection('notifications')
+            .add({
+              message: `${userData.name} accepted invitation to join ${team.teamName}`,
+              type: 'TEAM_LEAVE',
+            });
+        });
+        if (team.docId && removeTeam) removeTeam(team.docId);
+        if (addTeam) addTeam(newteam);
+      } catch (err) {
+        console.log('err', err);
+      }
     }
   };
 
   const handleEdit = () => {
     if (setSelectedTeam && openModal) {
       setSelectedTeam(team);
-      openModal(true);
+      openModal();
     }
   };
 
-  if (!team.teamName && team.gamers.length === 1)
-    return <HorizontalProfile user={team.gamers[0]} />;
+  const leaveTeam = () => {
+    if (team.uids.length === 1) {
+      db.collection('teams').doc(team.docId).delete();
+    } else {
+      const updatedUids = team.uids.filter((e) => e !== userData.uid);
+      let updatedGamers;
+      if (team.gamers) {
+        updatedGamers = team.gamers.filter((e) => e.uid !== userData.uid);
+      }
+      db.collection('teams')
+        .doc(team.docId)
+        .update({
+          ...team,
+          uids: updatedUids,
+          gamers: updatedGamers,
+        });
+      updatedUids.forEach((uid) => {
+        db.collection('users')
+          .doc(uid)
+          .collection('notifications')
+          .add({
+            message: `${userData.name} left ${team.teamName}`,
+            type: 'TEAM_LEAVE',
+          });
+      });
+      openSnackBar({
+        label: 'Left',
+        message: `You left ${team.teamName}`,
+        type: 'success',
+      });
+    }
+    if (team.docId && removeTeam) removeTeam(team.docId);
+  };
 
   return (
     <div
@@ -52,18 +159,37 @@ export default function TeamItem({
     >
       <h6 className="text-2xl text-indigo-600 mx-4 mb-2">{team.teamName}</h6>
       <div>
+        <h6 className="text-lg text-gray-300 mx-4 mb-2">Gamers</h6>
         {team.gamers.map((gamer, index) => (
           <div key={index}>
             <HorizontalProfile user={gamer} />
           </div>
         ))}
       </div>
-      {openModal ? (
-        <div className="flex justify-end">
-          <TextButton type="normal" name="Edit" onClick={handleEdit} />
-          <TextButton type="fail" name="Delete" onClick={deleteTeam} />
+      {(team.uids?.includes(userData.uid) ||
+        team.invitedUids?.includes(userData.uid)) && (
+        <div>
+          <h6 className="text-lg text-gray-300 mx-4 mb-2">Invited Gamers</h6>
+          {team.invitedGamers &&
+            team.invitedGamers.map((gamer, index) => (
+              <div key={index}>
+                <HorizontalProfile user={gamer} />
+              </div>
+            ))}
         </div>
-      ) : null}
+      )}
+      {team.invitedUids?.includes(userData.uid) && (
+        <div className="flex justify-end px-4 gap-4">
+          <TextButton type="fail" name="Delete" onClick={deleteInvitation} />
+          <FixedButton type="button" name="Accept" onClick={acceptInvitation} />
+        </div>
+      )}
+      {team.uids?.includes(userData.uid) && (
+        <div className="flex justify-end px-4 gap-4">
+          <TextButton type="fail" name="Leave" onClick={leaveTeam} />
+          <TextButton type="normal" name="Edit" onClick={handleEdit} />
+        </div>
+      )}
     </div>
   );
 }

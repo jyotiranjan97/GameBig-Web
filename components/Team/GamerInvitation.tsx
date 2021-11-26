@@ -113,6 +113,17 @@ export default function CreateTeam({
     onCancel();
   };
 
+  const handleChane = (e: ChangeEvent) => {
+    const target = e.target as HTMLInputElement;
+    setQuery(target.value);
+    const debouncedGetSearch = debounce(() => searchUser(target.value), 500);
+    if (target.value.trim() !== '') {
+      debouncedGetSearch();
+    } else {
+      setSearchresults([]);
+    }
+  };
+
   return (
     <div className="rounded-lg w-full h-full text-gray-300 font-sans font-semibold flex flex-col">
       <span className="text-2xl text-center mb-8">
@@ -126,19 +137,7 @@ export default function CreateTeam({
               name="username"
               placeHolder="search username or name"
               value={query}
-              onChangeHandler={(e: ChangeEvent) => {
-                const target = e.target as HTMLInputElement;
-                setQuery(target.value);
-                const debouncedGetSearch = debounce(
-                  () => searchUser(target.value),
-                  500
-                );
-                if (target.value.trim() !== '') {
-                  debouncedGetSearch();
-                } else {
-                  setSearchresults([]);
-                }
-              }}
+              onChangeHandler={(e: ChangeEvent) => handleChane(e)}
             />
           </div>
           <GamersList

@@ -3,7 +3,8 @@ import { db } from 'firebase/firebaseClient';
 
 export const fetchTeams = async (uid: string) => {
   const teams: TeamType[] = [];
-  db.collection('teams')
+  await db
+    .collection('teams')
     .where('uids', 'array-contains', uid)
     .get()
     .then((querySnapshot) => {

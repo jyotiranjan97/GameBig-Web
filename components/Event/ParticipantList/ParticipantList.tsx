@@ -1,4 +1,4 @@
-import TeamItem from '@/components/Team/TeamItem';
+import ReadOnlyTeamItem from '@/components/Team/ReadOnlyTeamItem';
 import { TeamType } from '@/utilities/types';
 import { useEffect, useState, useCallback } from 'react';
 import { fetchParticipatedTeams } from '../../../libs/getEventData';
@@ -32,7 +32,7 @@ export default function ParticipantList({ eventId }: Props) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {participants.map((team) => (
             <div key={team.docId}>
-              <TeamItem team={team} />
+              <ReadOnlyTeamItem team={team} />
             </div>
           ))}
         </div>
