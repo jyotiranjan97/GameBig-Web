@@ -17,15 +17,12 @@ type PropsType = {
   teamData?: TeamType;
   teamSize?: number;
   onCancel: () => void;
-  handleSubmit?: (teamData: TeamType) => void;
   setPart: (num: number) => void;
   setTeamId: (id: string) => void;
 };
 
 export default function CreateTeam({
   teamData,
-  onCancel,
-  handleSubmit,
   setPart,
   setTeamId,
 }: PropsType) {
