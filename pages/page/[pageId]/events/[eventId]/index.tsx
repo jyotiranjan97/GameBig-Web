@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import router from 'next/router';
@@ -6,13 +6,8 @@ import { ParsedUrlQuery } from 'querystring';
 import EventDetails from '@/components/Event/Details/EventDetails';
 import { useAuth } from '@/context/authContext';
 import Aux from '../../../../../hoc/Auxiliary/Auxiliary';
-import {
-  fetchEventDataById,
-  fetchParticipatedTeams,
-} from '../../../../../libs/getEventData';
+import { fetchEventDataById } from '../../../../../libs/getEventData';
 import { EventData } from '../../../../../utilities/eventItem/types';
-import { TeamType } from '@/utilities/types';
-import EventResultForm from '@/components/Event/Result/EventResultForm';
 import EventResults from '@/components/Event/Result/EventResults';
 import { db } from '../../../../../firebase/firebaseClient';
 import RespondToEvent from '@/components/Event/Register/RespondToEvent';
@@ -27,7 +22,6 @@ export default function Event({ pageId, eventData }: Props) {
     userData: { linkedPageId, uid },
   } = useAuth();
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
-  const [participants, setParticipants] = useState<TeamType[]>([]);
   const [teamId, setTeamId] = useState<string>('');
 
   let isPageOwner = linkedPageId === pageId ? true : false;
@@ -58,15 +52,6 @@ export default function Event({ pageId, eventData }: Props) {
       .delete();
     router.push('/');
   };
-
-  const teamsArr = useCallback(async () => {
-    const teams = await fetchParticipatedTeams(eventData.id);
-    setParticipants(teams);
-  }, [eventData.id]);
-
-  useEffect(() => {
-    teamsArr();
-  }, [teamsArr]);
 
   return (
     <Aux>

@@ -1,5 +1,4 @@
-import { useFormik } from 'formik';
-import * as yup from 'yup';
+import { ChangeEvent, useState } from 'react';
 import FormInput from '@/components/UI/Inputs/FormInput';
 import SelectDropDown from '@/components/UI/Select/SelectDropDown';
 import { TeamType } from '@/utilities/types';
@@ -11,97 +10,68 @@ interface Props {
   eventId: string;
 }
 
-const INITIAL_STATE = {
-  firstWinner: {},
-  secondWinner: {},
-  thirdWinner: {},
-  firstPrize: '',
-  secondPrize: '',
-  thirdPrize: '',
-};
+type Positiontype = { name: string; id: string };
 
-// export const validationSchema = yup.object({
-//    firstWinner: yup.BaseSchema(),
-//   secondWinner: {},
-//   thirdWinner: {},
-//   firstPrize: '',
-//   secondPrize: '',
-//   thirdPrize: '',
-// });
+const positions = [
+  { name: 'First', id: 1 },
+  { name: 'Second', id: 2 },
+  { name: 'Third', id: 3 },
+];
 
 const EventResultForm = ({ participants, eventId }: Props) => {
-  const saveResults = async (val: any) => {
+  const [winner, setWinner] = useState();
+  const [prize, setPrize] = useState<string>('');
+  const [position, setPosition] = useState<Positiontype>({} as Positiontype);
+
+  const saveResults = async () => {
     await db
       .collection('events')
       .doc(eventId)
-      .collection('results')
-      .doc('results')
-      .set(val);
+      .collection('winners')
+      .doc(position.id)
+      .set({ team: winner, prize, position: position.name });
   };
-  const formik = useFormik({
-    initialValues: INITIAL_STATE,
-    // validationSchema: validationSchema,
-    onSubmit: async (value, { resetForm }) => {
-      saveResults(value);
-      resetForm();
-    },
-  });
+
   return (
-    <div className="w-1/2">
-      <form onSubmit={formik.handleSubmit} noValidate autoComplete="false">
-        <div>
-          <SelectDropDown
-            name="firstWinner"
-            label="First"
-            menuItems={participants}
-            propToShow="teamName"
-            handleChange={(item) => {
-              formik.setFieldValue('firstWinner', item);
-            }}
-          />
+    <div>
+      <div className="grid md:grid-cols-2 md:gap-4 mx-6">
+        <SelectDropDown
+          name="position"
+          label="Position"
+          menuItems={positions}
+          propToShow="name"
+          handleChange={(item) => {
+            setPosition(item);
+          }}
+        />
+        <SelectDropDown
+          name="winner"
+          label="Winner"
+          menuItems={participants}
+          propToShow="teamName"
+          handleChange={(item) => {
+            setWinner(item);
+          }}
+        />
+        <div className="w-full">
           <FormInput
-            name="firstPrize"
+            name="prize"
             labelName="Prize"
-            onChangeHandler={formik.handleChange}
-            value={formik.values.firstPrize}
+            onChangeHandler={(e: ChangeEvent) => {
+              const target = e.target as HTMLInputElement;
+              setPrize(target.value);
+            }}
+            value={prize}
           />
         </div>
-        <div>
-          <SelectDropDown
-            name="secondWinner"
-            label="Second"
-            propToShow="teamName"
-            menuItems={participants}
-            handleChange={(item) => {
-              formik.setFieldValue('secondWinner', item);
-            }}
-          />
-          <FormInput
-            name="secondPrize"
-            labelName="Prize"
-            onChangeHandler={formik.handleChange}
-            value={formik.values.secondPrize}
-          />
-        </div>
-        <div>
-          <SelectDropDown
-            name="thirdWinner"
-            label="Third"
-            propToShow="teamName"
-            menuItems={participants}
-            handleChange={(item) => {
-              formik.setFieldValue('thirdWinner', item);
-            }}
-          />
-          <FormInput
-            name="thirdPrize"
-            labelName="Prize"
-            onChangeHandler={formik.handleChange}
-            value={formik.values.thirdPrize}
-          />
-        </div>
-        <FixedButton name="Update Winners" type="submit" />
-      </form>
+      </div>
+      <div className="mx-8">
+        <FixedButton
+          name="Declare Winners"
+          type="submit"
+          onClick={saveResults}
+        />
+      </div>
     </div>
   );
 };
