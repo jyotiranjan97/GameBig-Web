@@ -13,7 +13,6 @@ type PropsType = {
   teamData?: TeamType;
   teamId: string;
   onCancel: () => void;
-  handleSubmit?: (teamData: TeamType) => void;
   setPart: (num: number) => void;
 };
 

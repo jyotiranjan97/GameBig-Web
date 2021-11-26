@@ -64,12 +64,6 @@ export default function RegisterEventForm({
     setOpen(true);
   };
 
-  const handleCreateTeam = (team: TeamType) => {
-    setSelectedTeam(team);
-    setTeams([team, ...teams]);
-    setModalItem(2);
-  };
-
   return (
     <div
       id="register"
@@ -120,13 +114,7 @@ export default function RegisterEventForm({
         <div>
           {
             {
-              1: (
-                <CreateTeam
-                  handleSubmit={handleCreateTeam}
-                  teamSize={teamSize}
-                  onCancel={closeModal}
-                />
-              ),
+              1: <CreateTeam teamSize={teamSize} onCancel={closeModal} />,
               2: (
                 <GamerDetails
                   setTeamId={setTeamId}

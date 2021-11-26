@@ -7,7 +7,6 @@ type PropsType = {
   teamData?: TeamType;
   teamSize?: number;
   onCancel: () => void;
-  handleSubmit?: (teamData: TeamType) => void;
 };
 
 export default function CreateTeam({ teamData, onCancel }: PropsType) {
