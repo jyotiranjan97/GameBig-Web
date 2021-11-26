@@ -1,4 +1,6 @@
 import { ChangeEvent, useState } from 'react';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 import FormInput from '@/components/UI/Inputs/FormInput';
 import SelectDropDown from '@/components/UI/Select/SelectDropDown';
 import { TeamType } from '@/utilities/types';
@@ -10,20 +12,24 @@ interface Props {
   eventId: string;
 }
 
-type Positiontype = { name: string; id: string };
-
 const positions = [
   { name: 'First', id: 1 },
   { name: 'Second', id: 2 },
   { name: 'Third', id: 3 },
 ];
 
-const EventResultForm = ({ participants, eventId }: Props) => {
-  const [winner, setWinner] = useState();
-  const [prize, setPrize] = useState<string>('');
-  const [position, setPosition] = useState<Positiontype>({} as Positiontype);
+const INITIAL_STATE = {
+  winner: null,
+  prize: '',
+  position: null,
+};
 
-  const saveResults = async () => {
+export const validationSchema = yup.object({
+  prize: yup.string(),
+});
+
+const EventResultForm = ({ participants, eventId }: Props) => {
+  const saveResults = async ({ position, prize, winner }: any) => {
     await db
       .collection('events')
       .doc(eventId)
@@ -31,6 +37,18 @@ const EventResultForm = ({ participants, eventId }: Props) => {
       .doc(position.id)
       .set({ team: winner, prize, position: position.name });
   };
+
+  const formik = useFormik({
+    initialValues: INITIAL_STATE,
+    validationSchema: validationSchema,
+    onSubmit: async (value, { resetForm }) => {
+      const { position, winner, prize } = value;
+      if (position && winner && prize) {
+        saveResults({ position, winner, prize });
+        resetForm();
+      }
+    },
+  });
 
   return (
     <div>
@@ -41,7 +59,7 @@ const EventResultForm = ({ participants, eventId }: Props) => {
           menuItems={positions}
           propToShow="name"
           handleChange={(item) => {
-            setPosition(item);
+            formik.setFieldValue('position', item);
           }}
         />
         <SelectDropDown
@@ -50,7 +68,7 @@ const EventResultForm = ({ participants, eventId }: Props) => {
           menuItems={participants}
           propToShow="teamName"
           handleChange={(item) => {
-            setWinner(item);
+            formik.setFieldValue('winner', item);
           }}
         />
         <div className="w-full">
@@ -59,9 +77,9 @@ const EventResultForm = ({ participants, eventId }: Props) => {
             labelName="Prize"
             onChangeHandler={(e: ChangeEvent) => {
               const target = e.target as HTMLInputElement;
-              setPrize(target.value);
+              formik.setFieldValue('prize', target.value);
             }}
-            value={prize}
+            value={formik.values.prize}
           />
         </div>
       </div>
@@ -69,7 +87,7 @@ const EventResultForm = ({ participants, eventId }: Props) => {
         <FixedButton
           name="Declare Winners"
           type="submit"
-          onClick={saveResults}
+          onClick={formik.handleSubmit}
         />
       </div>
     </div>
