@@ -49,9 +49,12 @@ const EditAvatar = ({ photoURL }: Props) => {
             .getDownloadURL()
             .then((url) => {
               setUserData({ ...userData, photoURL: url });
-              db.collection('users').doc(userData.uid).update({
-                photoURL: url,
-              });
+              db.collection('users')
+                .doc(userData.uid)
+                .set({
+                  ...userData,
+                  photoURL: url,
+                });
               setLoading(false);
             });
         });
