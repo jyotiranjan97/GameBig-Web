@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState, ChangeEvent, useRef } from 'react';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import LoadingLottie from '../Loaders/Dots';
 import { useAuth } from '@/context/authContext';
 import ProfileAvatar from './ProfileAvatar';
-import { storage } from 'firebase/firebaseClient';
+import { db, storage } from 'firebase/firebaseClient';
 import Modal from '../Modal/Modal';
 import FixedButton from '../Buttons/FixedButton';
 import TextButton from '../Buttons/TextButton';
 
 const EditAvatar = () => {
-  const [modalStage, setModalStage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [src, setSrc] = useState<any>('');
   const imgRef = useRef<any>(null);
@@ -20,9 +20,12 @@ const EditAvatar = () => {
     aspect: 1 / 1,
   });
   const [completedCrop, setCompletedCrop] = useState<any>(null);
+  const { userData } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const {
     userData: { photoURL },
+    setUserData,
   } = useAuth();
 
   const onSelectFile = (e: ChangeEvent) => {
@@ -35,23 +38,40 @@ const EditAvatar = () => {
     }
   };
 
-  const uploadPicture = (e: ChangeEvent) => {
+  const uploadPicture = (file: Blob) => {
     try {
-      // storage
-      //   .ref(`/users/${file.name}`)
-      //   .put(file)
-      //   .then(() => {
-      //     storage
-      //       .ref(`/users/${file.name}`)
-      //       .getDownloadURL()
-      //       .then((url) => {
-      //         setURL(url);
-      //         console.log(url);
-      //       });
-      //   });
+      storage
+        .ref(`/users/${userData.uid}`)
+        .put(file)
+        .then(() => {
+          storage
+            .ref(`/users/${userData.uid}`)
+            .getDownloadURL()
+            .then((url) => {
+              setUserData({ ...userData, photoURL: url });
+              db.collection('users').doc(userData.uid).update({
+                photoURL: url,
+              });
+              setLoading(false);
+            });
+        });
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
+  };
+
+  const handleUploadClick = () => {
+    if (!previewCanvasRef.current || !completedCrop) {
+      return;
+    }
+    setLoading(true);
+    let file = null;
+    previewCanvasRef.current.toBlob((blob: any) => {
+      file = new File([blob], 'fileName.jpg', { type: 'image/jpeg' });
+      uploadPicture(file);
+    }, 'image/png');
+    closeModal();
   };
 
   const onLoad = useCallback((img) => {
@@ -59,19 +79,11 @@ const EditAvatar = () => {
   }, []);
 
   const closeModal = () => {
-    setModalStage(0);
     setIsModalOpen(false);
   };
 
   useEffect(() => {
     if (!completedCrop || !previewCanvasRef.current || !imgRef.current) {
-      console.log(
-        completedCrop,
-        previewCanvasRef.current,
-        imgRef.current,
-        '0000000000'
-      );
-
       return;
     }
 
@@ -105,11 +117,13 @@ const EditAvatar = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <ProfileAvatar photoURL={photoURL} />
-      <div
-        className="overflow-hidden relative flex flex-col justify-center 
-       bg-indigo-600 rounded-lg my-4 active:opacity-40 cursor-pointer"
-      >
+      <div>
+        <ProfileAvatar photoURL={photoURL} />
+        <div className="fixed mt-[-5.6rem] ml-8">
+          {loading ? <LoadingLottie height={40} width={80} /> : null}
+        </div>
+      </div>
+      <div className="flex flex-col justify-cente bg-indigo-600 rounded-lg my-4 active:opacity-40 cursor-pointer">
         <button className="bg-blue hover:bg-blue-light text-white font-bold py-2 px-4 w-full inline-flex items-center  cursor-pointer">
           <span className="font-sans font-semibold cursor-pointer">
             Update Picture
@@ -125,40 +139,30 @@ const EditAvatar = () => {
       </div>
 
       <Modal isOpen={isModalOpen}>
-        <div>
-          {
-            {
-              0: (
-                <div className="flex flex-col items-center px-4 md:px-16 mt-4">
-                  <div className="flex w-full justify-between items-center">
-                    <TextButton
-                      type="normal"
-                      name="Cancel"
-                      onClick={closeModal}
-                    />
-                    <FixedButton name="Done" onClick={() => setModalStage(1)} />
-                  </div>
-
-                  <ReactCrop
-                    src={src}
-                    onImageLoaded={onLoad}
-                    crop={crop}
-                    onChange={(c) => setCrop(c)}
-                    onComplete={(c) => setCompletedCrop(c)}
-                  />
-                  <div className="flex justify-center">
-                    <canvas
-                      ref={previewCanvasRef}
-                      style={{
-                        width: Math.round(completedCrop?.width ?? 0),
-                        height: Math.round(completedCrop?.height ?? 0),
-                      }}
-                    />
-                  </div>
-                </div>
-              ),
-            }[modalStage]
-          }
+        <div className="flex flex-col items-center px-4 md:px-16 mt-4">
+          <div className="flex w-full justify-between items-center">
+            <TextButton type="normal" name="Cancel" onClick={closeModal} />
+            <FixedButton name="Upload" onClick={handleUploadClick} />
+          </div>
+          <ReactCrop
+            src={src}
+            onImageLoaded={onLoad}
+            crop={crop}
+            onChange={(c) => setCrop(c)}
+            onComplete={(c) => setCompletedCrop(c)}
+          />
+          <span className="font-sans font-semibold text-center text-xl text-gray-300 my-8">
+            Preview
+          </span>
+          <div className="flex justify-center">
+            <canvas
+              ref={previewCanvasRef}
+              style={{
+                width: Math.round(completedCrop?.width ?? 0),
+                height: Math.round(completedCrop?.height ?? 0),
+              }}
+            />
+          </div>
         </div>
       </Modal>
     </div>
