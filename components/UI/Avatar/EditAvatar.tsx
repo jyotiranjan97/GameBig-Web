@@ -9,7 +9,10 @@ import Modal from '../Modal/Modal';
 import FixedButton from '../Buttons/FixedButton';
 import TextButton from '../Buttons/TextButton';
 
-const EditAvatar = () => {
+type Props = {
+  photoURL?: string;
+};
+const EditAvatar = ({ photoURL }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [src, setSrc] = useState<any>('');
   const imgRef = useRef<any>(null);
@@ -23,10 +26,7 @@ const EditAvatar = () => {
   const { userData } = useAuth();
   const [loading, setLoading] = useState(false);
 
-  const {
-    userData: { photoURL },
-    setUserData,
-  } = useAuth();
+  const { setUserData } = useAuth();
 
   const onSelectFile = (e: ChangeEvent) => {
     const target = e.target as HTMLInputElement;

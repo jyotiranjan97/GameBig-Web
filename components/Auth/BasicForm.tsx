@@ -7,6 +7,7 @@ import FormInput from '../UI/Inputs/FormInput';
 import FixedButton from '../UI/Buttons/FixedButton';
 import { useUI } from '@/context/uiContext';
 import { isUsernameTaken, createUser } from '@/libs/user';
+import EditAvatar from '../UI/Avatar/EditAvatar';
 
 const usernameRegExp = /^[a-zA-Z0-9-_]{0,40}$/;
 
@@ -61,6 +62,9 @@ function BasicForm({ setData }: Props) {
         'rounded-lg bg-gradient-to-tl from-gray-900 via-black to-gray-900'
       }
     >
+      <div className="flex justify-center">
+        <EditAvatar />
+      </div>
       <form className="flex flex-col justify-center ">
         <FormInput
           labelName="username"
