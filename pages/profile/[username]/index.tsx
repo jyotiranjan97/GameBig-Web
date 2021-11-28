@@ -68,7 +68,16 @@ const Games: NextPage<PageProps> = ({ userData, savedGames }) => {
     <div>
       <Head>
         <title>Profile</title>
-        <meta name="description" content="Players Profile" />
+        <meta name="description" content="Players Profile" key="desc" />
+
+        {/* OG meta */}
+        <meta property="og:title" content="Profile" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:description"
+          content="Check out my profile at GameBig"
+        />
+
         <link rel="icon" href="/favicon.ico" />
         <link rel="manifest" href="/manifest.json" />
       </Head>
