@@ -27,7 +27,6 @@ export default function MessageInput({
 
   const createMessageRoom = async () => {
     let roomId;
-
     try {
       await db
         .collection('messageRooms')
