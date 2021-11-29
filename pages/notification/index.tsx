@@ -20,11 +20,15 @@ export default function Home() {
   };
 
   const markRerad = (id: string) => {
-    db.collection('users')
-      .doc(userData.uid)
-      .collection('notifications')
-      .doc(id)
-      .update({ isSeen: true });
+    try {
+      db.collection('users')
+        .doc(userData.uid)
+        .collection('notifications')
+        .doc(id)
+        .update({ isSeen: true });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

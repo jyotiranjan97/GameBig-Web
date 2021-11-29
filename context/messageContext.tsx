@@ -20,29 +20,33 @@ function useProviderMessages() {
 
   useEffect(() => {
     if (userData.uid) {
-      db.collection('messageRooms')
-        .where('uids', 'array-contains', userData.uid)
-        .onSnapshot((snapshot) => {
-          let tempUnseen = 0;
-          const tempMessageRooms: MessageRoomType[] = [];
-          snapshot.docs.map((doc) => {
-            const messageRoom = doc.data() as MessageRoomType;
-            const { unseen } = messageRoom;
-            let currentRoomUnseen = 0;
-            if (unseen && unseen[userData.uid]) {
-              currentRoomUnseen = unseen[userData.uid];
-              tempUnseen += currentRoomUnseen;
-            }
-            tempMessageRooms.push({
-              ...messageRoom,
-              docId: doc.id,
-              unseen,
-              noOfUnseen: currentRoomUnseen,
+      try {
+        db.collection('messageRooms')
+          .where('uids', 'array-contains', userData.uid)
+          .onSnapshot((snapshot) => {
+            let tempUnseen = 0;
+            const tempMessageRooms: MessageRoomType[] = [];
+            snapshot.docs.map((doc) => {
+              const messageRoom = doc.data() as MessageRoomType;
+              const { unseen } = messageRoom;
+              let currentRoomUnseen = 0;
+              if (unseen && unseen[userData.uid]) {
+                currentRoomUnseen = unseen[userData.uid];
+                tempUnseen += currentRoomUnseen;
+              }
+              tempMessageRooms.push({
+                ...messageRoom,
+                docId: doc.id,
+                unseen,
+                noOfUnseen: currentRoomUnseen,
+              });
             });
+            setMessageRooms(tempMessageRooms);
+            setUnseen(tempUnseen);
           });
-          setMessageRooms(tempMessageRooms);
-          setUnseen(tempUnseen);
-        });
+      } catch (err) {
+        console.log(err);
+      }
     }
   }, [userData.uid]);
   const updateCurrentMessageRoom = (mr: MessageRoomType) => {

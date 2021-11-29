@@ -16,23 +16,27 @@ function useProviderNotification() {
   const [unseen, setUnseen] = useState<number>(0);
 
   const fetchNotices = () => {
-    db.collection('users')
-      .doc(userData.uid)
-      .collection('notifications')
-      .onSnapshot((snapshots) => {
-        const tempNotices: Notification[] = [];
-        let tempUnseen = 0;
-        snapshots.forEach((doc) => {
-          const notice = doc.data() as Notification;
-          const { isSeen } = notice;
-          if (!isSeen) {
-            tempUnseen += 1;
-          }
-          tempNotices.push({ ...notice, docId: doc.id });
+    try {
+      db.collection('users')
+        .doc(userData.uid)
+        .collection('notifications')
+        .onSnapshot((snapshots) => {
+          const tempNotices: Notification[] = [];
+          let tempUnseen = 0;
+          snapshots.forEach((doc) => {
+            const notice = doc.data() as Notification;
+            const { isSeen } = notice;
+            if (!isSeen) {
+              tempUnseen += 1;
+            }
+            tempNotices.push({ ...notice, docId: doc.id });
+          });
+          setNotices(tempNotices);
+          setUnseen(tempUnseen);
         });
-        setNotices(tempNotices);
-        setUnseen(tempUnseen);
-      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
@@ -42,14 +46,11 @@ function useProviderNotification() {
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker
-        .register('./firebase-messaging-sw.js')
-        .then(function (registration) {
-          console.log('Registration successful, scope is:', registration.scope);
-        })
-        .catch(function (err) {
-          console.log('Service worker registration failed, error:', err);
-        });
+      try {
+        navigator.serviceWorker.register('./firebase-messaging-sw.js');
+      } catch (err) {
+        console.log(err);
+      }
     }
   }, []);
 
