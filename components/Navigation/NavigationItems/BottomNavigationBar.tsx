@@ -6,11 +6,13 @@ import FriendsIcon from '../../UI/Icons/NavIcons/FriendsIcon';
 import JoinIcon from '../../UI/Icons/NavIcons/JoinIcon';
 import TrophyIcon from '../../UI/Icons/NavIcons/TrophyIcon';
 import { useAuth } from '../../../context/authContext';
+import { useMessages } from '@/context/messageContext';
 
 function BottomNavigationBar() {
   const {
     userData: { linkedPageId },
   } = useAuth();
+  const { unread } = useMessages();
   const router = useRouter();
   return (
     <div className="md:hidden w-full h-12 font-sans">
@@ -127,11 +129,13 @@ function BottomNavigationBar() {
                     isActive={router.pathname === '/messages'}
                     size={30}
                   />
-                  <div className="fixed mt-[-1.4rem] ml-[1.2rem] rounded-full h-5 w-5 bg-red-500 px-0.5">
-                    <span className="text-gray-50 text-sm font-semibold m-auto">
-                      1
-                    </span>
-                  </div>
+                  {unread > 0 ? (
+                    <div className="fixed mt-[-1.4rem] ml-[1.2rem] rounded-full h-5 w-5 bg-green-600 px-0.5">
+                      <span className="text-gray-50 text-sm font-semibold m-auto">
+                        {unread}
+                      </span>
+                    </div>
+                  ) : null}
                 </div>
               </span>
               <span

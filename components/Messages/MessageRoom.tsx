@@ -1,3 +1,4 @@
+import { useAuth } from '@/context/authContext';
 import { getDecoratedTime } from '@/utilities/functions/dateConvert';
 import Image from 'next/image';
 
@@ -7,8 +8,10 @@ type Props = {
   receiverUsername: string;
   receiverUid: string;
   lastMessage?: string;
+  unread: any;
   updatedAt: any;
   onClick: (user: any) => void;
+  noOfUnread: number;
 };
 
 const MessageRoom = ({
@@ -19,6 +22,7 @@ const MessageRoom = ({
   lastMessage,
   updatedAt,
   onClick,
+  noOfUnread,
 }: Props) => {
   const name =
     receiverName && receiverName.length > 18
@@ -55,9 +59,20 @@ const MessageRoom = ({
           <span className="text-lg  font-semibold">{name}</span>
           <span className="text-sm text-gray-400 text-right">{time}</span>
         </div>
-        {lastMessage && (
-          <h1 className="text-base font-medium text-gray-500">{lastMessage}</h1>
-        )}
+        <div className="flex justify-between items-center">
+          {lastMessage && (
+            <h1 className="text-base font-medium text-gray-500">
+              {lastMessage}
+            </h1>
+          )}
+          {noOfUnread > 0 && (
+            <div className="flex justify-center items-center rounded-full h-6 w-6 bg-green-600">
+              <span className="text-gray-50 text-sm font-bold font-sans">
+                {noOfUnread}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

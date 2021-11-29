@@ -6,27 +6,49 @@ import { MessageRoomType } from '@/utilities/messages/MessagesTypes';
 const messageContext = createContext({
   messageRooms: [] as MessageRoomType[],
   unread: 0,
+  currentMessageRoom: {} as MessageRoomType,
+  updateCurrentMessageRoom: (mr: MessageRoomType) => {},
 });
 
 function useProviderMessages() {
   const { userData } = useAuth();
   const [messageRooms, setMessageRooms] = useState<MessageRoomType[]>([]);
   const [unread, setUnread] = useState<number>(0);
+  const [currentMessageRoom, setCurrentMessageRoom] = useState<MessageRoomType>(
+    {} as MessageRoomType
+  );
 
   useEffect(() => {
     if (userData.uid) {
       db.collection('messageRooms')
         .where('uids', 'array-contains', userData.uid)
         .onSnapshot((snapshot) => {
-          const rooms = snapshot.docs.map((doc) => ({
-            ...doc.data(),
-            docId: doc.id,
-          }));
-          setMessageRooms(rooms as any);
+          let tempUnread = 0;
+          const tempMessageRooms: MessageRoomType[] = [];
+          snapshot.docs.map((doc) => {
+            const messageRoom = doc.data() as MessageRoomType;
+            const { unread } = messageRoom;
+            let currentRoomUnread = 0;
+            if (unread && unread[userData.uid]) {
+              currentRoomUnread = unread[userData.uid];
+              tempUnread += currentRoomUnread;
+            }
+            tempMessageRooms.push({
+              ...messageRoom,
+              docId: doc.id,
+              unread,
+              noOfUnread: currentRoomUnread,
+            });
+          });
+          setMessageRooms(tempMessageRooms);
+          setUnread(tempUnread);
         });
     }
   }, [userData.uid]);
-  return { messageRooms, unread };
+  const updateCurrentMessageRoom = (mr: MessageRoomType) => {
+    setCurrentMessageRoom(mr);
+  };
+  return { messageRooms, unread, currentMessageRoom, updateCurrentMessageRoom };
 }
 
 type Props = {

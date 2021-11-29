@@ -1,3 +1,4 @@
+import { useMessages } from '@/context/messageContext';
 import { useState } from 'react';
 import { useAuth } from '../../context/authContext';
 import firebase, { db } from '../../firebase/firebaseClient';
@@ -22,6 +23,7 @@ export default function MessageInput({
 }: Props) {
   const [message, setMessage] = useState<string>('');
   const { userData } = useAuth();
+  const { currentMessageRoom } = useMessages();
 
   const createMessageRoom = async () => {
     let roomId;
@@ -43,6 +45,10 @@ export default function MessageInput({
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
           lastMessage: message,
+          unread: {
+            [receivingUser.uid]: 0,
+            [userData.uid]: 0,
+          },
           type: 'direct',
         })
         .then((docRef) => {
@@ -62,11 +68,19 @@ export default function MessageInput({
     message: string;
   }) => {
     try {
-      await db.collection('messageRooms').doc(roomId).update({
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        lastMessage: message,
-        noOfUnseenMessages: 0, // increment
-      });
+      await db
+        .collection('messageRooms')
+        .doc(roomId)
+        .update({
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          lastMessage: message,
+          unread: {
+            [receivingUser.uid]: currentMessageRoom.unread[receivingUser.uid]
+              ? currentMessageRoom.unread[receivingUser.uid] + 1
+              : 1,
+            [userData.uid]: 0,
+          },
+        });
     } catch (error) {
       console.log(error);
     }

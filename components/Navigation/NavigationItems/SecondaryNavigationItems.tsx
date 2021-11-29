@@ -41,7 +41,7 @@ export default function SecondaryNavigationItems() {
                 size={36}
               />
               {unread > 0 ? (
-                <div className="fixed mt-[-1.5rem] ml-[1.2rem] rounded-full h-6 w-6 bg-red-500">
+                <div className="fixed mt-[-1.5rem] ml-[1.2rem] rounded-full h-6 w-6 bg-green-600">
                   <span className="text-gray-50 text-sm">{unread}</span>
                 </div>
               ) : null}
