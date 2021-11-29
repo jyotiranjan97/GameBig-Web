@@ -1,14 +1,35 @@
-import React, { useEffect, useState, createContext } from 'react';
+import React, { useEffect, useState, createContext, useContext } from 'react';
 import localforage from 'localforage';
-import firebase from '../firebase/firebaseClient';
+import firebase, { db } from '../firebase/firebaseClient';
 import { updateFcmToken } from '@/libs/user';
 import { useAuth } from './authContext';
+import { Notification } from '@/utilities/notification/type';
 
-const notificationContext = createContext({ notices: [] });
+const notificationContext = createContext({ notices: [] as Notification[] });
 
 function useProviderNotification() {
   const { userData } = useAuth();
-  const [notices, setNotices] = useState<any>([]);
+  const [notices, setNotices] = useState<Notification[]>([]);
+
+  const fetchNotices = () => {
+    db.collection('users')
+      .doc(userData.uid)
+      .collection('notifications')
+      .get()
+      .then((snapshots) => {
+        const tempNotices: Notification[] = [];
+        snapshots.forEach((doc) => {
+          tempNotices.push(doc.data() as Notification);
+        });
+        setNotices(tempNotices);
+      });
+  };
+
+  useEffect(() => {
+    if (userData.uid) fetchNotices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userData.uid]);
+
   useEffect(() => {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker
@@ -71,4 +92,8 @@ export const NotificationProvider = ({ children }: Props) => {
       {children}
     </notificationContext.Provider>
   );
+};
+
+export const useNotication = () => {
+  return useContext(notificationContext);
 };

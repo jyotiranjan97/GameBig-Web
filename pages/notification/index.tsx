@@ -1,37 +1,13 @@
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { useAuth } from '@/context/authContext';
-import { db } from '../../firebase/firebaseClient';
+import { useNotication } from '@/context/notificationContext';
 import Aux from '../../hoc/Auxiliary/Auxiliary';
-
-interface Notification {
-  docId?: string;
-  message: string;
-  data?: string;
-  type: string;
-}
 
 export default function Home() {
   const { userData } = useAuth();
+  const { notices } = useNotication();
   const router = useRouter();
-  const [notices, setNotices] = useState<Notification[]>([]);
-
-  useEffect(() => {
-    if (userData.uid) {
-      db.collection('users')
-        .doc(userData.uid)
-        .collection('notifications')
-        .get()
-        .then((snapshot) => {
-          const notices: Notification[] = snapshot.docs.map((doc) => ({
-            ...(doc.data() as Notification),
-            docId: doc.id,
-          }));
-          setNotices(notices as any);
-        });
-    }
-  }, [userData.uid]);
 
   const handleClick = (type: string) => {
     switch (type) {

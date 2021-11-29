@@ -76,7 +76,7 @@ export default function CreateTeam({
     invitedGamers.map((user) => {
       notifyUser({
         uid: user.uid,
-        message: `${userData.name} invited you to join a team`,
+        message: `${userData.name} invited you to join his team`,
         type: 'TEAM',
       });
     });
@@ -91,8 +91,8 @@ export default function CreateTeam({
   const handleChane = (e: ChangeEvent) => {
     const target = e.target as HTMLInputElement;
     setQuery(target.value);
-    const debouncedGetSearch = debounce(() => {
-      const users: BasicUserType[] = searchUser(target.value);
+    const debouncedGetSearch = debounce(async () => {
+      const users: BasicUserType[] = await searchUser(target.value);
       if (users.length > 0) setSearchresults(users);
     }, 500);
     if (target.value.trim() !== '') {

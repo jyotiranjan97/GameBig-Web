@@ -8,11 +8,11 @@ const algoliaClient = algoliasearch(
 
 export default algoliaClient;
 
-export const searchUser = (query: string) => {
+export const searchUser = async (query: string) => {
   const results: BasicUserType[] = [];
   if (query.trim() === '') return results;
   const index = algoliaClient.initIndex('users');
-  index
+  await index
     .search(query, {
       attributesToRetrieve: ['username', 'name', 'uid', 'photoURL'],
       hitsPerPage: 5,

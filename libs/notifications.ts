@@ -7,9 +7,18 @@ type Props = {
   type: string;
 };
 export const notifyUser = async ({ data, uid, message, type }: Props) => {
-  await db.collection('users').doc(uid).collection('notifications').add({
-    data,
-    message,
-    type,
-  });
+  try {
+    await db
+      .collection('users')
+      .doc(uid)
+      .collection('notifications')
+      .add({
+        data: data || null,
+        message,
+        type,
+        isRead: false,
+      });
+  } catch (err) {
+    console.error('notifyUser', err);
+  }
 };

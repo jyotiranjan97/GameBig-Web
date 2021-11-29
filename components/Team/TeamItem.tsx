@@ -82,11 +82,13 @@ export default function TeamItem({
           username: userData.username,
         },
       ];
+      const updatedUids = [...team.uids, userData.uid];
       const newteam: TeamType = {
         ...team,
         gamers: updatedGamers,
         invitedUids: updatedInvitedUids,
         invitedGamers: updatedInvitedGamers,
+        uids: updatedUids,
       };
       try {
         if (team.docId) {

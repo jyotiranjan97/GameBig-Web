@@ -26,6 +26,7 @@ export default function CreateTeam({ teamData, onCancel }: PropsType) {
           ),
           1: (
             <GamerInvitation
+              teamData={teamData}
               onCancel={onCancel}
               setPart={setPart}
               teamId={teamId}
