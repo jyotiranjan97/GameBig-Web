@@ -1,22 +1,35 @@
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { getDecoratedTime } from '../../utilities/functions/dateConvert';
+import { useAuth } from '@/context/authContext';
+import { useNotication } from '@/context/notificationContext';
 import Aux from '../../hoc/Auxiliary/Auxiliary';
-import { useUI } from '@/context/uiContext';
+import DoubleTick from '../../components/UI/Icons/Others/DoubleTick';
+import { db } from 'firebase/firebaseClient';
 
 export default function Home() {
-  const { openSnackBar } = useUI();
+  const { userData } = useAuth();
+  const { notices } = useNotication();
+  const router = useRouter();
 
-  const [notices, setNotices] = useState([]);
-
-  useEffect(() => {
-    let notices = [];
-    let stringifiedNotices = localStorage.getItem('notices');
-    if (stringifiedNotices) {
-      notices = JSON.parse(stringifiedNotices);
+  const handleClick = (type: string) => {
+    switch (type) {
+      case 'TEAM':
+        router.push(`/profile/${userData.username}/teams`);
+        break;
     }
-    setNotices(notices);
-  }, []);
+  };
+
+  const markRerad = (id: string) => {
+    try {
+      db.collection('users')
+        .doc(userData.uid)
+        .collection('notifications')
+        .doc(id)
+        .update({ isSeen: true });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <Aux>
@@ -26,43 +39,29 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
         <link rel="manifest" href="/manifest.json" />
       </Head>
-      <div className="">
+      <div className="flex flex-col mx-auto px-1 md:px-0 w-full lg:w-1/2 md:w-2/3">
         {notices.map(function (notice, index) {
-          const { roomId, password, linkedPageName, startTime } = notice;
-          const readableStartTime = getDecoratedTime(startTime);
           return (
-            <div key={index} className="">
-              <h2>
-                Details of match by {linkedPageName} at {readableStartTime} are
-                : RoomId:{' '}
-                <span
-                  onClick={() => {
-                    navigator.clipboard.writeText(roomId);
-                    openSnackBar({
-                      label: 'Copied!',
-                      message: 'Room Id copied to clipboard',
-                      type: 'info',
-                    });
-                  }}
-                  className=""
-                >
-                  {roomId}
-                </span>
-                Password:{' '}
-                <span
-                  onClick={() => {
-                    navigator.clipboard.writeText(password);
-                    openSnackBar({
-                      label: 'Copied',
-                      message: 'Password copied to clipboard',
-                      type: 'info',
-                    });
-                  }}
-                  className=""
-                >
-                  {password}
-                </span>
-              </h2>
+            <div
+              className={
+                'flex justify-between rounded-sm py-2 px-3 my-0.5 ' +
+                (notice.isSeen ? 'bg-gray-900 ' : 'bg-gray-700')
+              }
+              key={index}
+              onClick={() => handleClick(notice.type)}
+            >
+              <span className="text-lg text-gray-100 font-sans">
+                {notice.message}
+              </span>
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markRerad(notice.docId);
+                }}
+                className="flex items-center cursor-pointer p-1 rounded-md"
+              >
+                {notice.isSeen ? null : <DoubleTick size={28} />}
+              </div>
             </div>
           );
         })}

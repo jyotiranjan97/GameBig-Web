@@ -2,29 +2,29 @@ import { useState } from 'react';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import TeamUpItem from '../../components/Join/TeamUpItem';
+import TeamUpItem from '../../components/Openings/TeamUpItem';
 import Modal from '@/components/UI/Modal/Modal';
-import CreatePostForm from '@/components/Join/CreatePostForm';
+import CreatePostForm from '@/components/Openings/CreatePostForm';
 import { useAuth } from '@/context/authContext';
-import { JoinPostType } from '@/utilities/join/JoinPostType';
+import { TeamUpPost } from '@/utilities/openings/TeamUpPost';
 import { firebaseAdmin } from 'firebase/firebaseAdmin';
 import Aux from 'hoc/Auxiliary/Auxiliary';
-import TeamUpFAQ from '@/components/Join/TeamUpFAQ';
+import TeamUpFAQ from '@/components/Openings/TeamUpFAQ';
 
-const JoinPage = ({ joinPosts }: { joinPosts: JoinPostType[] }) => {
+const JoinPage = ({ joinPosts }: { joinPosts: TeamUpPost[] }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     userData: { uid },
   } = useAuth();
   const router = useRouter();
   const goToMyPosts = () => {
-    router.push(`/join/${uid}`);
+    router.push(`/openings/${uid}`);
   };
 
   return (
     <div className="flex flex-col sm:static w-full sm:px-10 px-0">
       <Head>
-        <title>Join</title>
+        <title>Openings</title>
         <meta name="description" content="Join teams and Clans!" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="manifest" href="/manifest.json" />
@@ -57,12 +57,12 @@ const JoinPage = ({ joinPosts }: { joinPosts: JoinPostType[] }) => {
             }
             onClick={() => setIsModalOpen(true)}
           >
-            Find Teammate
+            Ask For Teammates
           </span>
         </div>
         <div>
           {joinPosts.map((joinPost) => (
-            <TeamUpItem data={joinPost} key={joinPost.id} />
+            <TeamUpItem data={joinPost} key={joinPost.docId} />
           ))}
         </div>
         <Modal isOpen={isModalOpen} closeModal={() => setIsModalOpen(false)}>
@@ -76,15 +76,15 @@ const JoinPage = ({ joinPosts }: { joinPosts: JoinPostType[] }) => {
 export default JoinPage;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const joinPosts: JoinPostType[] = [];
+  const joinPosts: TeamUpPost[] = [];
   try {
     await firebaseAdmin
       .firestore()
-      .collection('join')
+      .collection('teamOpening')
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          joinPosts.push({ ...(doc.data() as JoinPostType), id: doc.id });
+          joinPosts.push({ ...(doc.data() as TeamUpPost), docId: doc.id });
         });
       });
     return { props: { joinPosts } };
