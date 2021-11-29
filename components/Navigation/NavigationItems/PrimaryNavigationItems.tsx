@@ -61,7 +61,12 @@ export default function PrimaryNavigationItems() {
         isActive={router.pathname === '/messages'}
         toolTip="Messages"
       >
-        <MessageIcon isActive={router.pathname === '/messages'} size={33} />
+        <div>
+          <MessageIcon isActive={router.pathname === '/messages'} size={33} />
+          <div className="fixed mt-[-1.5rem] ml-[1.2rem] rounded-full h-6 w-6 bg-red-500">
+            <span className="text-gray-50 text-sm">11</span>
+          </div>
+        </div>
       </NavigationItem>
     </ul>
   );

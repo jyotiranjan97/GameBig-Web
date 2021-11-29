@@ -3,6 +3,8 @@ import Head from 'next/head';
 import { useAuth } from '@/context/authContext';
 import { useNotication } from '@/context/notificationContext';
 import Aux from '../../hoc/Auxiliary/Auxiliary';
+import DoubleTick from '../../components/UI/Icons/Others/DoubleTick';
+import { db } from 'firebase/firebaseClient';
 
 export default function Home() {
   const { userData } = useAuth();
@@ -15,6 +17,14 @@ export default function Home() {
         router.push(`/profile/${userData.username}/teams`);
         break;
     }
+  };
+
+  const markRerad = (id: string) => {
+    db.collection('users')
+      .doc(userData.uid)
+      .collection('notifications')
+      .doc(id)
+      .update({ isRead: true });
   };
 
   return (
@@ -30,7 +40,7 @@ export default function Home() {
           return (
             <div
               className={
-                'flex rounded-sm py-2 px-3 my-0.5 ' +
+                'flex justify-between rounded-sm py-2 px-3 my-0.5 ' +
                 (notice.isRead ? 'bg-gray-900 ' : 'bg-gray-700')
               }
               key={index}
@@ -39,6 +49,15 @@ export default function Home() {
               <span className="text-lg text-gray-100 font-sans">
                 {notice.message}
               </span>
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markRerad(notice.docId);
+                }}
+                className="flex items-center cursor-pointer p-1 rounded-md"
+              >
+                {notice.isRead ? null : <DoubleTick size={28} />}
+              </div>
             </div>
           );
         })}

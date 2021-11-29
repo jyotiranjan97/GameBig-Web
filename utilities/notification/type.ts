@@ -1,5 +1,5 @@
 export interface Notification {
-  docId?: string;
+  docId: string;
   message: string;
   data?: string;
   type: string;
