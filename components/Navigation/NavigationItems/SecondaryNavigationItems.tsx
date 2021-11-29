@@ -10,7 +10,7 @@ import ProfileIcon from '../../UI/Icons/NavIcons/ProfileIcon';
 
 export default function SecondaryNavigationItems() {
   const { userData } = useAuth();
-  const { unread } = useNotication();
+  const { unseen } = useNotication();
   const router = useRouter();
   const [isUser, setIsUser] = useState(true);
 
@@ -40,9 +40,9 @@ export default function SecondaryNavigationItems() {
                 isActive={router.pathname === '/notification'}
                 size={36}
               />
-              {unread > 0 ? (
+              {unseen > 0 ? (
                 <div className="fixed mt-[-1.5rem] ml-[1.2rem] rounded-full h-6 w-6 bg-green-600">
-                  <span className="text-gray-50 text-sm">{unread}</span>
+                  <span className="text-gray-50 text-sm">{unseen}</span>
                 </div>
               ) : null}
             </div>

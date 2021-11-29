@@ -51,14 +51,14 @@ const MessageRoomList = ({
     router.push('/people');
   };
 
-  const updateUnreadMessageCount = async (room: any) => {
+  const updateUnseenMessageCount = async (room: any) => {
     try {
       await db
         .collection('messageRooms')
         .doc(room.docId)
         .update({
-          unread: {
-            ...room.unread,
+          unseen: {
+            ...room.unseen,
             [userData.uid]: 0,
           },
         });
@@ -77,7 +77,7 @@ const MessageRoomList = ({
     setMessageRoomId(room.docId);
     setShowMsgContainer(true);
     updateCurrentMessageRoom(room);
-    updateUnreadMessageCount(room);
+    updateUnseenMessageCount(room);
   };
 
   const messageRoomsComponent = messageRooms.map((room: any, index: number) => {
@@ -90,8 +90,8 @@ const MessageRoomList = ({
           receiverUid={room.receiver[userData.uid].uid}
           lastMessage={room.lastMessage}
           updatedAt={room.updatedAt}
-          unread={room.unerad}
-          noOfUnread={room.noOfUnread}
+          unseen={room.unerad}
+          noOfUnseen={room.noOfUnseen}
           onClick={() => {
             clickHandler(room);
           }}

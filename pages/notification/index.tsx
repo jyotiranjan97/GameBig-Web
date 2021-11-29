@@ -24,7 +24,7 @@ export default function Home() {
       .doc(userData.uid)
       .collection('notifications')
       .doc(id)
-      .update({ isRead: true });
+      .update({ isSeen: true });
   };
 
   return (
@@ -41,7 +41,7 @@ export default function Home() {
             <div
               className={
                 'flex justify-between rounded-sm py-2 px-3 my-0.5 ' +
-                (notice.isRead ? 'bg-gray-900 ' : 'bg-gray-700')
+                (notice.isSeen ? 'bg-gray-900 ' : 'bg-gray-700')
               }
               key={index}
               onClick={() => handleClick(notice.type)}
@@ -56,7 +56,7 @@ export default function Home() {
                 }}
                 className="flex items-center cursor-pointer p-1 rounded-md"
               >
-                {notice.isRead ? null : <DoubleTick size={28} />}
+                {notice.isSeen ? null : <DoubleTick size={28} />}
               </div>
             </div>
           );

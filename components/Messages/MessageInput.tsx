@@ -45,7 +45,7 @@ export default function MessageInput({
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
           lastMessage: message,
-          unread: {
+          unseen: {
             [receivingUser.uid]: 0,
             [userData.uid]: 0,
           },
@@ -74,9 +74,9 @@ export default function MessageInput({
         .update({
           updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
           lastMessage: message,
-          unread: {
-            [receivingUser.uid]: currentMessageRoom.unread[receivingUser.uid]
-              ? currentMessageRoom.unread[receivingUser.uid] + 1
+          unseen: {
+            [receivingUser.uid]: currentMessageRoom.unseen[receivingUser.uid]
+              ? currentMessageRoom.unseen[receivingUser.uid] + 1
               : 1,
             [userData.uid]: 0,
           },

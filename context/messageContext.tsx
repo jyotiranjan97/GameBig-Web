@@ -5,7 +5,7 @@ import { MessageRoomType } from '@/utilities/messages/MessagesTypes';
 
 const messageContext = createContext({
   messageRooms: [] as MessageRoomType[],
-  unread: 0,
+  unseen: 0,
   currentMessageRoom: {} as MessageRoomType,
   updateCurrentMessageRoom: (mr: MessageRoomType) => {},
 });
@@ -13,7 +13,7 @@ const messageContext = createContext({
 function useProviderMessages() {
   const { userData } = useAuth();
   const [messageRooms, setMessageRooms] = useState<MessageRoomType[]>([]);
-  const [unread, setUnread] = useState<number>(0);
+  const [unseen, setUnseen] = useState<number>(0);
   const [currentMessageRoom, setCurrentMessageRoom] = useState<MessageRoomType>(
     {} as MessageRoomType
   );
@@ -23,32 +23,32 @@ function useProviderMessages() {
       db.collection('messageRooms')
         .where('uids', 'array-contains', userData.uid)
         .onSnapshot((snapshot) => {
-          let tempUnread = 0;
+          let tempUnseen = 0;
           const tempMessageRooms: MessageRoomType[] = [];
           snapshot.docs.map((doc) => {
             const messageRoom = doc.data() as MessageRoomType;
-            const { unread } = messageRoom;
-            let currentRoomUnread = 0;
-            if (unread && unread[userData.uid]) {
-              currentRoomUnread = unread[userData.uid];
-              tempUnread += currentRoomUnread;
+            const { unseen } = messageRoom;
+            let currentRoomUnseen = 0;
+            if (unseen && unseen[userData.uid]) {
+              currentRoomUnseen = unseen[userData.uid];
+              tempUnseen += currentRoomUnseen;
             }
             tempMessageRooms.push({
               ...messageRoom,
               docId: doc.id,
-              unread,
-              noOfUnread: currentRoomUnread,
+              unseen,
+              noOfUnseen: currentRoomUnseen,
             });
           });
           setMessageRooms(tempMessageRooms);
-          setUnread(tempUnread);
+          setUnseen(tempUnseen);
         });
     }
   }, [userData.uid]);
   const updateCurrentMessageRoom = (mr: MessageRoomType) => {
     setCurrentMessageRoom(mr);
   };
-  return { messageRooms, unread, currentMessageRoom, updateCurrentMessageRoom };
+  return { messageRooms, unseen, currentMessageRoom, updateCurrentMessageRoom };
 }
 
 type Props = {

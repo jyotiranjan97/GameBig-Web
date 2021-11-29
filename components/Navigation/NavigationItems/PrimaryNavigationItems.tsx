@@ -13,7 +13,7 @@ export default function PrimaryNavigationItems() {
     userData: { linkedPageId },
   } = useAuth();
   const router = useRouter();
-  const { unread } = useMessages();
+  const { unseen } = useMessages();
 
   return (
     <ul className="hidden md:flex items-end lg:space-x-10 lg:mr-20">
@@ -65,9 +65,9 @@ export default function PrimaryNavigationItems() {
       >
         <div>
           <MessageIcon isActive={router.pathname === '/messages'} size={33} />
-          {unread > 0 ? (
+          {unseen > 0 ? (
             <div className="fixed mt-[-1.5rem] ml-[1.2rem] rounded-full h-6 w-6 bg-green-600">
-              <span className="text-white text-sm">{unread}</span>
+              <span className="text-white text-sm">{unseen}</span>
             </div>
           ) : null}
         </div>

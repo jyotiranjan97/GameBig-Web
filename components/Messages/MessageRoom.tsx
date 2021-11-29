@@ -8,10 +8,10 @@ type Props = {
   receiverUsername: string;
   receiverUid: string;
   lastMessage?: string;
-  unread: any;
+  unseen: any;
   updatedAt: any;
   onClick: (user: any) => void;
-  noOfUnread: number;
+  noOfUnseen: number;
 };
 
 const MessageRoom = ({
@@ -22,13 +22,20 @@ const MessageRoom = ({
   lastMessage,
   updatedAt,
   onClick,
-  noOfUnread,
+  noOfUnseen,
 }: Props) => {
   const name =
     receiverName && receiverName.length > 18
       ? `${receiverName.slice(0, 18)}...`
       : receiverName;
-  const time = getDecoratedTime(updatedAt.toDate().toISOString());
+  const getTime = () => {
+    try {
+      return getDecoratedTime(updatedAt.toDate().toISOString());
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
+  };
 
   return (
     <div
@@ -57,7 +64,7 @@ const MessageRoom = ({
       <div className="flex flex-col w-full pr-2">
         <div className="flex justify-between items-center">
           <span className="text-lg  font-semibold">{name}</span>
-          <span className="text-sm text-gray-400 text-right">{time}</span>
+          <span className="text-sm text-gray-400 text-right">{getTime()}</span>
         </div>
         <div className="flex justify-between items-center">
           {lastMessage && (
@@ -65,10 +72,10 @@ const MessageRoom = ({
               {lastMessage}
             </h1>
           )}
-          {noOfUnread > 0 && (
+          {noOfUnseen > 0 && (
             <div className="flex justify-center items-center rounded-full h-6 w-6 bg-green-600">
               <span className="text-gray-50 text-sm font-bold font-sans">
-                {noOfUnread}
+                {noOfUnseen}
               </span>
             </div>
           )}

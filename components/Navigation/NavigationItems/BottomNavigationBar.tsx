@@ -12,7 +12,7 @@ function BottomNavigationBar() {
   const {
     userData: { linkedPageId },
   } = useAuth();
-  const { unread } = useMessages();
+  const { unseen } = useMessages();
   const router = useRouter();
   return (
     <div className="md:hidden w-full h-12 font-sans">
@@ -129,10 +129,10 @@ function BottomNavigationBar() {
                     isActive={router.pathname === '/messages'}
                     size={30}
                   />
-                  {unread > 0 ? (
+                  {unseen > 0 ? (
                     <div className="fixed mt-[-1.4rem] ml-[1.2rem] rounded-full h-5 w-5 bg-green-600 px-0.5">
                       <span className="text-gray-50 text-sm font-semibold m-auto">
-                        {unread}
+                        {unseen}
                       </span>
                     </div>
                   ) : null}

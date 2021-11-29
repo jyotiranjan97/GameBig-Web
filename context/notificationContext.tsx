@@ -7,13 +7,13 @@ import { Notification } from '@/utilities/notification/type';
 
 const notificationContext = createContext({
   notices: [] as Notification[],
-  unread: 0,
+  unseen: 0,
 });
 
 function useProviderNotification() {
   const { userData } = useAuth();
   const [notices, setNotices] = useState<Notification[]>([]);
-  const [unread, setUnread] = useState<number>(0);
+  const [unseen, setUnseen] = useState<number>(0);
 
   const fetchNotices = () => {
     db.collection('users')
@@ -21,17 +21,17 @@ function useProviderNotification() {
       .collection('notifications')
       .onSnapshot((snapshots) => {
         const tempNotices: Notification[] = [];
-        let tempUnread = 0;
+        let tempUnseen = 0;
         snapshots.forEach((doc) => {
           const notice = doc.data() as Notification;
-          const { isRead } = notice;
-          if (!isRead) {
-            tempUnread += 1;
+          const { isSeen } = notice;
+          if (!isSeen) {
+            tempUnseen += 1;
           }
           tempNotices.push({ ...notice, docId: doc.id });
         });
         setNotices(tempNotices);
-        setUnread(tempUnread);
+        setUnseen(tempUnseen);
       });
   };
 
@@ -88,7 +88,7 @@ function useProviderNotification() {
       console.log('error in fcm setup', err);
     }
   }, [userData.fcmToken, userData.uid]);
-  return { notices, unread };
+  return { notices, unseen };
 }
 
 type Props = {
