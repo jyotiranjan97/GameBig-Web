@@ -25,6 +25,7 @@ const EditAvatar = ({ photoURL }: Props) => {
   const [completedCrop, setCompletedCrop] = useState<any>(null);
   const { userData } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [currentPhotoURL, setCurrentPhotoURL] = useState(photoURL || '');
 
   const { setUserData } = useAuth();
 
@@ -49,6 +50,7 @@ const EditAvatar = ({ photoURL }: Props) => {
             .getDownloadURL()
             .then((url) => {
               setUserData({ ...userData, photoURL: url });
+              setCurrentPhotoURL(url);
               db.collection('users')
                 .doc(userData.uid)
                 .set({
@@ -121,19 +123,19 @@ const EditAvatar = ({ photoURL }: Props) => {
   return (
     <div className="flex flex-col items-center">
       <div>
-        <ProfileAvatar photoURL={photoURL} />
+        <ProfileAvatar photoURL={currentPhotoURL} />
         <div className="fixed mt-[-5.6rem] ml-8">
           {loading ? <LoadingLottie height={40} width={80} /> : null}
         </div>
       </div>
-      <div className="flex flex-col justify-cente bg-indigo-600 rounded-lg my-4 active:opacity-40 cursor-pointer">
-        <button className="bg-blue hover:bg-blue-light text-white font-bold py-2 px-4 w-full inline-flex items-center  cursor-pointer">
-          <span className="font-sans font-semibold cursor-pointer">
+      <div className="flex flex-col bg-indigo-600 justify-cente rounded-lg my-4 active:opacity-40 cursor-pointer">
+        <button className="text-white font-bold py-1 px-9 w-full cursor-pointer">
+          <span className="font-sans font-semibold cursor-pointer text-lg">
             Update Picture
           </span>
         </button>
         <input
-          className="cursor-pointer absolute block py-2 px-4 w-full opacity-0 pin-r pin-t "
+          className="cursor-pointer fixed mt-[0.3rem] ml-[0rem] opacity-0"
           type="file"
           name="documents[]"
           accept="image/*"
@@ -142,7 +144,7 @@ const EditAvatar = ({ photoURL }: Props) => {
       </div>
 
       <Modal isOpen={isModalOpen}>
-        <div className="flex flex-col items-center px-4 md:px-16 mt-4">
+        <div className="flex flex-col mx-auto px-4 md:px-16 mt-4">
           <div className="flex w-full justify-between items-center">
             <TextButton type="normal" name="Cancel" onClick={closeModal} />
             <FixedButton name="Upload" onClick={handleUploadClick} />

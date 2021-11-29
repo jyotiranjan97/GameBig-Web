@@ -92,9 +92,7 @@ function ProfileForm({ oldValues, push }: Props) {
         />
       </div>
       <div className="flex-auto px-4 lg:px-10 py-10 pt-0 bg-gradient-to-tr from-black to-gray-900">
-        <div className="flex justify-center">
-          <EditAvatar photoURL={userData.photoURL} />
-        </div>
+        <EditAvatar photoURL={userData.photoURL} />
         <form onSubmit={formik.handleSubmit}>
           <h6 className="text-gray-400 md:text-sm mt-3 mb-6 font-bold uppercase">
             User Information
