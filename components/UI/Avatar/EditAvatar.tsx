@@ -4,15 +4,15 @@ import 'react-image-crop/dist/ReactCrop.css';
 import LoadingLottie from '../Loaders/Dots';
 import { useAuth } from '@/context/authContext';
 import ProfileAvatar from './ProfileAvatar';
-import { db, storage } from 'firebase/firebaseClient';
+import firebase, { storage } from 'firebase/firebaseClient';
 import Modal from '../Modal/Modal';
 import FixedButton from '../Buttons/FixedButton';
 import TextButton from '../Buttons/TextButton';
 
-type Props = {
-  photoURL?: string;
-};
-const EditAvatar = ({ photoURL }: Props) => {
+type Props = { onUpload?: (url: string) => void };
+
+const EditAvatar = ({ onUpload }: Props) => {
+  const { userData } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [src, setSrc] = useState<any>('');
   const imgRef = useRef<any>(null);
@@ -23,9 +23,8 @@ const EditAvatar = ({ photoURL }: Props) => {
     aspect: 1 / 1,
   });
   const [completedCrop, setCompletedCrop] = useState<any>(null);
-  const { userData } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [currentPhotoURL, setCurrentPhotoURL] = useState(photoURL || '');
+  const [progress, setProgress] = useState(0);
 
   const { setUserData } = useAuth();
 
@@ -41,25 +40,35 @@ const EditAvatar = ({ photoURL }: Props) => {
 
   const uploadPicture = (file: Blob) => {
     try {
-      storage
-        .ref(`/users/${userData.uid}`)
-        .put(file)
-        .then(() => {
-          storage
-            .ref(`/users/${userData.uid}`)
-            .getDownloadURL()
-            .then((url) => {
-              setUserData({ ...userData, photoURL: url });
-              setCurrentPhotoURL(url);
-              db.collection('users')
-                .doc(userData.uid)
-                .set({
-                  ...userData,
-                  photoURL: url,
-                });
-              setLoading(false);
-            });
-        });
+      const uploadTask = storage
+        .ref(`/users/profilePic/${userData.uid}`)
+        .put(file);
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          var progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setProgress(Math.ceil(progress));
+          switch (snapshot.state) {
+            case firebase.storage.TaskState.PAUSED:
+              console.log('Upload is paused');
+              break;
+            case firebase.storage.TaskState.RUNNING:
+              console.log('Upload is running');
+              break;
+          }
+        },
+        (error) => {
+          console.log(error, 'error uploading image');
+        },
+        () => {
+          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+            setUserData({ ...userData, photoURL: downloadURL });
+            if (onUpload) onUpload(downloadURL);
+            setLoading(false);
+          });
+        }
+      );
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -123,9 +132,15 @@ const EditAvatar = ({ photoURL }: Props) => {
   return (
     <div className="flex flex-col items-center">
       <div>
-        <ProfileAvatar photoURL={currentPhotoURL} />
-        <div className="fixed mt-[-5.6rem] ml-8">
-          {loading ? <LoadingLottie height={40} width={80} /> : null}
+        <ProfileAvatar photoURL={userData.photoURL} />
+        <div className="fixed mt-[-5.6rem] ml-6">
+          {loading ? (
+            <div className="bg-gray-900 rounded">
+              <span className="text-lg font-sans font-bold text-indigo-600 mx-1 my-0.5">
+                {progress + ' % done'}
+              </span>
+            </div>
+          ) : null}
         </div>
       </div>
       <div className="flex flex-col bg-indigo-600 justify-cente rounded-lg my-4 active:opacity-40 cursor-pointer">
