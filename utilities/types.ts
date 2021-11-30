@@ -11,7 +11,7 @@ export interface BasicUserType {
   uid: string;
   username: string;
   name?: string;
-  photoURL?: string | undefined;
+  photoURL?: string | undefined | null;
 }
 
 export interface UserData {
