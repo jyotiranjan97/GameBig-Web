@@ -1,13 +1,14 @@
+import { MouseEvent } from 'react';
 import { useAuth } from '@/context/authContext';
 import { games } from '@/utilities/GameList';
-import { JoinPostType } from '@/utilities/join/JoinPostType';
+import { TeamUpPost } from '@/utilities/openings/TeamUpPost';
 import { db } from 'firebase/firebaseClient';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import FixedButton from '../UI/Buttons/FixedButton';
 
 type Props = {
-  data: JoinPostType;
+  data: TeamUpPost;
 };
 
 export default function Post({ data }: Props) {
@@ -16,20 +17,24 @@ export default function Post({ data }: Props) {
   } = useAuth();
   const router = useRouter();
 
-  const openProfile = () => {
-    router.push(`/profile/${data.username}`);
+  const openProfile = (e: MouseEvent) => {
+    e.stopPropagation();
+    if (data.username) router.push(`/profile/${data.username}`);
   };
 
   const handleCardClick = () => {
-    router.push(`/join/${data.uid}/${data.id}`);
+    if (data.uid && data.docId) {
+      router.push(`/openings/${data.uid}/${data.docId}`);
+    }
   };
 
-  const createJoinee = async () => {
+  const createJoinee = async (e: MouseEvent) => {
+    e.stopPropagation();
     try {
       if (data.uid !== uid) {
         await db
-          .collection('join')
-          .doc(data.id)
+          .collection('teamOpening')
+          .doc(data.docId)
           .collection('joinees')
           .doc(uid)
           .set({ uid, username, name, photoURL });
@@ -45,11 +50,12 @@ export default function Post({ data }: Props) {
         'xl:w-1/2 md:w-5/6 w-11/12 mx-auto font-sans px-5 py-5 ' +
         'bg-gray-900 rounded-lg my-2'
       }
+      onClick={handleCardClick}
     >
       <div className="flex items-center justify-between px-3 mb-5 rounded-lg border-2 border-gray-800 ">
         <section
           className="flex gap-3 items-center justify-start "
-          onClick={openProfile}
+          onClick={(e) => openProfile(e)}
         >
           {data.photoURL ? (
             <div className="relative h-10 w-10 md:h-14 md:w-14 cursor-pointer">
@@ -77,7 +83,9 @@ export default function Post({ data }: Props) {
           </section>
         </section>
         {data.uid !== uid ? (
-          <FixedButton name="Apply" onClick={createJoinee} />
+          <div onClick={(e) => e && createJoinee(e)}>
+            <FixedButton name="Apply" />
+          </div>
         ) : null}
       </div>
 
@@ -92,7 +100,6 @@ export default function Post({ data }: Props) {
           'grid md:grid-cols-3 lg:grid-cols-4 grid-cols-2 mt-8 gap-5 ' +
           'cursor-pointer bg-black/30 hover:bg-black/50 px-6 py-3 rounded-md'
         }
-        onClick={handleCardClick}
       >
         <section className="flex flex-col">
           <span className="font-semibold text-gray-500 text-sm">Game</span>
@@ -134,24 +141,32 @@ export default function Post({ data }: Props) {
             {data.experience}
           </span>
         </section>
-        <section className="flex flex-col">
-          <span className="font-semibold text-gray-500 text-sm">Role</span>
-          <span className="text-gray-100 tracking-wide text-lg font-medium pt-1 pl-0.5">
-            {data.role}
-          </span>
-        </section>
-        <section className="flex flex-col">
-          <span className="font-semibold text-gray-500 text-sm">Purpose</span>
-          <span className="text-gray-100 tracking-wide text-lg font-medium pt-1 pl-0.5">
-            {data.purpose}
-          </span>
-        </section>
-        <section className="flex flex-col">
-          <span className="font-semibold text-gray-500 text-sm">Language</span>
-          <span className="text-gray-100 tracking-wide text-lg font-medium pt-1 pl-0.5">
-            {data.language}
-          </span>
-        </section>
+        {data.role ? (
+          <section className="flex flex-col">
+            <span className="font-semibold text-gray-500 text-sm">Role</span>
+            <span className="text-gray-100 tracking-wide text-lg font-medium pt-1 pl-0.5">
+              {data.role}
+            </span>
+          </section>
+        ) : null}
+        {data.purpose ? (
+          <section className="flex flex-col">
+            <span className="font-semibold text-gray-500 text-sm">Purpose</span>
+            <span className="text-gray-100 tracking-wide text-lg font-medium pt-1 pl-0.5">
+              {data.purpose}
+            </span>
+          </section>
+        ) : null}
+        {data.language ? (
+          <section className="flex flex-col">
+            <span className="font-semibold text-gray-500 text-sm">
+              Language
+            </span>
+            <span className="text-gray-100 tracking-wide text-lg font-medium pt-1 pl-0.5">
+              {data.language}
+            </span>
+          </section>
+        ) : null}
       </div>
     </div>
   );
