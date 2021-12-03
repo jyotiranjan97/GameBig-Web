@@ -18,10 +18,10 @@ const config = {
 
 if (!firebase.apps.length) {
   firebase.initializeApp(config);
+  firebase.analytics();
 }
 
 export default firebase;
-export const analytics = firebase.analytics();
 export const db = firebase.firestore();
 export const functions = firebase.app().functions('asia-east2');
 export const storage = firebase.storage();
