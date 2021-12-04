@@ -4,10 +4,10 @@ import { useFormik } from 'formik';
 import TimeDatePicker from '@/components/UI/Picker/TimeDatePicker';
 import Aux from '../../../hoc/Auxiliary/Auxiliary';
 import { GAMES } from '../../../assets/data/Games';
-import { MODES, SCREAMS } from '../../../assets/data/Utils';
 import SelectDropDown from '@/components/UI/Select/SelectDropDown';
 import SelectRadioButton from '@/components/UI/Select/SelectRadioButton';
 import SliderSelect from '@/components/UI/Slider/SliderSelect';
+import { HostEventForm } from '@/utilities/HostEventForm';
 import { addNewEvent } from '@/libs/createEvent';
 import { useAuth } from '@/context/authContext';
 import FixedButton from '@/components/UI/Buttons/FixedButton';
@@ -17,12 +17,12 @@ import TextArea from '@/components/UI/Inputs/TextArea';
 import { validationSchema } from '@/utilities/eventItem/validator';
 import { EventFormData } from '@/utilities/eventItem/types';
 
-const INITIAL_STATE: EventFormData = {
+const INITIAL_STATE = {
   gameCode: 'bgmi-m',
   mode: 'Squad',
   type: 'Custom Room',
-  tier: 'T3',
-  noOfSlots: 25,
+  tier: 'T1',
+  noOfSlots: 10,
   startTime: new Date(),
   description: '',
   prize: '',
@@ -37,7 +37,7 @@ export default function CreateEventForm() {
   const formik = useFormik({
     initialValues: INITIAL_STATE,
     validationSchema: validationSchema,
-    onSubmit: async (value: EventFormData, { resetForm }) => {
+    onSubmit: async (value, { resetForm }) => {
       setIsModalOpen(true);
       if (linkedPageId && linkedPageName) {
         const tournId = await addNewEvent(linkedPageId, linkedPageName, value);
@@ -51,6 +51,42 @@ export default function CreateEventForm() {
       resetForm();
     },
   });
+
+  const formInputComponents = HostEventForm[formik.values.gameCode].form.map(
+    (input: Record<string, any>, index: number) => {
+      switch (input.formType) {
+        case 'radio':
+          return (
+            <section key={index.toString()}>
+              <SelectRadioButton
+                label={input.labelName}
+                items={input.options}
+                values={formik.values}
+                name={input.name}
+                handleChange={(item) => formik.setFieldValue(input.name, item)}
+              />
+            </section>
+          );
+        case 'slider':
+          return (
+            <section key={index.toString()}>
+              <SliderSelect
+                label={input.labelName}
+                name={input.name}
+                values={formik.values}
+                min={input.min}
+                max={formik.values.mode === 'Solo' ? input.max * 4 : input.max}
+                onSlide={(e) =>
+                  formik.setFieldValue(input.name, e.target.value)
+                }
+              />
+            </section>
+          );
+        default:
+          return <></>;
+      }
+    }
+  );
 
   return (
     <Aux>
@@ -95,34 +131,7 @@ export default function CreateEventForm() {
                   formik.setFieldValue('startTime', date);
                 }}
               />
-              <SelectRadioButton
-                label="Game Mode"
-                name="mode"
-                value={formik.values.mode}
-                handleChange={(item) => {
-                  formik.setFieldValue('mode', item.name);
-                }}
-                items={MODES}
-              />
-              <SelectRadioButton
-                label="Tier"
-                name="tier"
-                value={formik.values.tier}
-                handleChange={(item) => {
-                  formik.setFieldValue('tier', item.name);
-                }}
-                items={SCREAMS}
-              />
-              <SliderSelect
-                label="No of Slots"
-                name="noOfSlots"
-                value={formik.values.noOfSlots}
-                min={2}
-                max={formik.values.mode === 'Solo' ? 100 : 25}
-                onSlide={(e) =>
-                  formik.setFieldValue('noOfSlots', e.target.value)
-                }
-              />
+              {formInputComponents}
               <FormInput
                 labelName="Prize / Reward (Optional)"
                 name="prize"

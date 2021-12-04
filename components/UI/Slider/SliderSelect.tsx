@@ -2,17 +2,18 @@ import { ChangeEvent } from 'react';
 interface Props {
   name: string;
   label: string;
-  value: number;
+  values: any;
   min: number;
   max: number;
   onSlide: (event: ChangeEvent<{ value: unknown }>) => void;
 }
 
 export default function SliderSelect({
+  name,
   min,
   max,
   label,
-  value,
+  values,
   onSlide,
 }: Props) {
   return (
@@ -25,13 +26,13 @@ export default function SliderSelect({
           id="x"
           type="range"
           className="range"
-          value={value}
+          value={values[name]}
           min={min}
           max={max}
           onChange={onSlide}
         />
         <span className="text-gray-300 text-lg font-bold font-sans tracking-wide m-5">
-          {value}
+          {values[name] || max}
         </span>
       </div>
     </div>
