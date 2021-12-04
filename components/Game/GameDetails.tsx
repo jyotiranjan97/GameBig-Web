@@ -92,9 +92,7 @@ const GameDetails: FC<Props> = ({
                 label={input.labelName}
                 menuItems={input.dropDownOptions}
                 name={input.name}
-                handleChange={(item) =>
-                  formik.setFieldValue('highestTier', item)
-                }
+                handleChange={(item) => formik.setFieldValue(input.name, item)}
               />
             </section>
           );
