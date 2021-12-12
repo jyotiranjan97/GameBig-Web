@@ -1,15 +1,14 @@
 import { FC } from 'react';
 import Lottie from 'react-lottie';
 import Link from 'next/link';
-import animationData from '@public/find_people_lottie.json';
+import animationData from '@public/profile_lottie.json';
 
-const PeopleConnect: FC = () => {
+const ProfileContent: FC = () => {
   const defaultOptions = {
     loop: true,
     autoplay: true,
     animationData: animationData,
   };
-
   return (
     <div
       className={
@@ -19,7 +18,7 @@ const PeopleConnect: FC = () => {
       }
     >
       <div className="sm:w-[50%] flex justify-center items-center">
-        <Lottie options={defaultOptions} height={'75%'} width={'75%'} />
+        <Lottie options={defaultOptions} height={'60%'} width={'60%'} />
       </div>
       <div className="sm:w-[50%] my-auto">
         <div
@@ -28,18 +27,18 @@ const PeopleConnect: FC = () => {
             'text-center px-5'
           }
         >
-          Connect with people and meet awesome gamers.
+          Add your skills and create your portfolio for your career in gaming
         </div>
-        <Link href="/people">
+        <Link href="/profile/master_lionel">
           <a
             className={
-              'block bg-indigo-600 hover:bg-indigo-500 py-4 px-4 rounded-md ' +
+              'block bg-green-600 hover:bg-green-500 py-4 px-4 rounded-md ' +
               'text-lg font-medium text-white uppercase mt-10 tracking-wide ' +
-              'shadow-md shadow-indigo-500/50 w-52 flex items-center justify-center ' +
+              'shadow-md shadow-green-500/50 w-52 flex items-center justify-center ' +
               'mx-auto'
             }
           >
-            Explore People
+            Check out This
           </a>
         </Link>
       </div>
@@ -47,4 +46,4 @@ const PeopleConnect: FC = () => {
   );
 };
 
-export default PeopleConnect;
+export default ProfileContent;

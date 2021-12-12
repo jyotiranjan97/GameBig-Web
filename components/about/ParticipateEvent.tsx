@@ -8,9 +8,6 @@ const ParticipateEvent: FC = () => {
     loop: true,
     autoplay: true,
     animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: 'xMidYMid slice',
-    },
   };
 
   return (
@@ -21,7 +18,7 @@ const ParticipateEvent: FC = () => {
         'flex sm:flex-row flex-col'
       }
     >
-      <div className="sm:w-[50%]">
+      <div className="sm:w-[50%] flex justify-center items-center">
         <Lottie options={defaultOptions} height={'80%'} width={'80%'} />
       </div>
       <div className="sm:w-[50%] my-auto">
@@ -36,9 +33,9 @@ const ParticipateEvent: FC = () => {
         <Link href="/events">
           <a
             className={
-              'block bg-indigo-600 hover:bg-indigo-500 py-4 px-4 rounded-md ' +
+              'block bg-yellow-500 hover:bg-yellow-400 py-4 px-4 rounded-md ' +
               'text-lg font-medium text-white uppercase mt-10 tracking-wide ' +
-              'shadow-md shadow-indigo-500/50 w-52 flex items-center justify-center ' +
+              'shadow-md shadow-yellow-400/50 w-52 flex items-center justify-center ' +
               'mx-auto'
             }
           >

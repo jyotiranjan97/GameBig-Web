@@ -3,6 +3,8 @@ import Link from 'next/link';
 import PeopleConnect from './PeopleConnect';
 import Opening from './Opening';
 import ParticipateEvent from './ParticipateEvent';
+import PageOrganize from './PageOrganize';
+import ProfileContent from './ProfileContent';
 
 const FeaturesComponent: FC = () => {
   return (
@@ -10,12 +12,8 @@ const FeaturesComponent: FC = () => {
       <PeopleConnect />
       <Opening />
       <ParticipateEvent />
-      <div
-        className={
-          'w-full h-[80vh] bg-gray-900/50 rounded-xl mb-10 xl:mb-20 ' +
-          'backdrop-blur-3xl shadow-xl shadow-gray-800/50'
-        }
-      ></div>
+      <PageOrganize />
+      <ProfileContent />
     </div>
   );
 };

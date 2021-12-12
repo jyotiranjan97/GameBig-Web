@@ -11,7 +11,7 @@ const LandingComponent: FC = () => {
           </span>
 
           <h1 className="font-roboto-slab text-4xl sm:text-6xl text-red-400 leading-tight mt-4">
-            Play with <br /> awsome gamers
+            Play with <br /> awesome gamers
           </h1>
 
           <div className="max-w-md">
@@ -24,8 +24,8 @@ const LandingComponent: FC = () => {
           <Link href="/openings">
             <a
               className={
-                'block bg-indigo-600 hover:bg-indigo-500 py-2 px-4 rounded-full ' +
-                'text-lg font-medium text-white uppercase mt-10 ' +
+                'block bg-indigo-600 hover:bg-indigo-500 py-4 px-6 rounded-md ' +
+                'text-xl font-medium text-white uppercase mt-10 ' +
                 'shadow-md shadow-indigo-500/50'
               }
             >

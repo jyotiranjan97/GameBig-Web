@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import Lottie from 'react-lottie';
 import Link from 'next/link';
-import animationData from '@public/find_people_lottie.json';
+import animationData from '@public/organization_lottie.json';
 
-const PeopleConnect: FC = () => {
+const PageOrganize: FC = () => {
   const defaultOptions = {
     loop: true,
     autoplay: true,
@@ -28,18 +28,18 @@ const PeopleConnect: FC = () => {
             'text-center px-5'
           }
         >
-          Connect with people and meet awesome gamers.
+          Create Page for your clan or organization and host matches.
         </div>
-        <Link href="/people">
+        <Link href="/page">
           <a
             className={
-              'block bg-indigo-600 hover:bg-indigo-500 py-4 px-4 rounded-md ' +
+              'block bg-red-600 hover:bg-red-500 py-4 px-4 rounded-md ' +
               'text-lg font-medium text-white uppercase mt-10 tracking-wide ' +
-              'shadow-md shadow-indigo-500/50 w-52 flex items-center justify-center ' +
+              'shadow-md shadow-red-500/50 w-52 flex items-center justify-center ' +
               'mx-auto'
             }
           >
-            Explore People
+            Explore Page
           </a>
         </Link>
       </div>
@@ -47,4 +47,4 @@ const PeopleConnect: FC = () => {
   );
 };
 
-export default PeopleConnect;
+export default PageOrganize;
