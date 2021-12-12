@@ -13,7 +13,7 @@ const ParticipateEvent: FC = () => {
   return (
     <div
       className={
-        'w-full h-[80vh] bg-gray-900/50 rounded-xl mb-10 xl:mb-20 ' +
+        'w-full h-[75vh] bg-gray-900/50 rounded-xl mb-10 xl:mb-20 ' +
         'backdrop-blur-3xl shadow-xl shadow-gray-800/50 ' +
         'flex sm:flex-row flex-col'
       }
@@ -33,9 +33,9 @@ const ParticipateEvent: FC = () => {
         <Link href="/events">
           <a
             className={
-              'block bg-yellow-500 hover:bg-yellow-400 py-4 px-4 rounded-md ' +
+              'block bg-orange-600 hover:bg-orange-500 py-4 px-4 rounded-md ' +
               'text-lg font-medium text-white uppercase mt-10 tracking-wide ' +
-              'shadow-md shadow-yellow-400/50 w-52 flex items-center justify-center ' +
+              'shadow-md shadow-orange-400/50 w-52 flex items-center justify-center ' +
               'mx-auto'
             }
           >

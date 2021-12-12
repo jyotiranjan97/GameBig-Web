@@ -5,6 +5,7 @@ import router from 'next/router';
 import HeaderLogo from '@/components/UI/Logo/HeaderLogo';
 import LandingComponent from '@/components/about/LandingComponent';
 import FeaturesComponent from '@/components/about/FeaturesComponent';
+import FooterComponent from '@/components/about/FooterComponent';
 
 const AboutPage: NextPage = () => {
   function handleAuthClick() {
@@ -14,12 +15,12 @@ const AboutPage: NextPage = () => {
   return (
     <div className="flex flex-col bg-black fixed w-screen inset-0 z-50 overflow-auto">
       <Head>
-        <title>Home</title>
+        <title>Gamebig</title>
         <meta
           name="description"
           content={
-            'Upcoming Esports Events in COD, BGMI and FreeFire. ' +
-            'Interested players can register instantly for custom rooms and events.'
+            'Gamebig is a platform for gamers to share their gaming experiences ' +
+            'and connect with other gamers.'
           }
           key="desc"
         />
@@ -56,6 +57,7 @@ const AboutPage: NextPage = () => {
       </div>
       <LandingComponent />
       <FeaturesComponent />
+      <FooterComponent />
     </div>
   );
 };
