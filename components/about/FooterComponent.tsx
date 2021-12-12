@@ -4,6 +4,10 @@ import Instagram from '../UI/Icons/SocialIcons/InstagramIcon';
 import Twitter from '../UI/Icons/SocialIcons/TwitterIcon';
 import HeaderLogo from '../UI/Logo/HeaderLogo';
 
+const FACEBOOK_URL = 'https://www.facebook.com/GameBigHQ';
+const TWITTER_URL = 'https://twitter.com/GameBigHQ';
+const INSTAGRAM_URL = 'https://www.instagram.com/gamebighq';
+
 const FooterComponent: FC = () => {
   function handleSocialButtonClick(link: string) {
     window.open(link, '_blank', 'noopener noreferrer');
@@ -26,7 +30,7 @@ const FooterComponent: FC = () => {
                   'rounded-full outline-none mr-2 flex justify-center items-center ' +
                   'hover:-translate-y-1 transition ease-in-out duration-200'
                 }
-                onClick={() => handleSocialButtonClick('https://facebook.com')}
+                onClick={() => handleSocialButtonClick(FACEBOOK_URL)}
               >
                 <Facebook size={30} />
               </button>
@@ -36,7 +40,7 @@ const FooterComponent: FC = () => {
                   'rounded-full outline-none mr-2 flex justify-center items-center ' +
                   'hover:-translate-y-1 transition ease-in-out duration-200'
                 }
-                onClick={() => handleSocialButtonClick('https://twitter.com')}
+                onClick={() => handleSocialButtonClick(TWITTER_URL)}
               >
                 <Twitter size={20} />
               </button>
@@ -46,7 +50,7 @@ const FooterComponent: FC = () => {
                   'rounded-full outline-none mr-2 flex justify-center items-center ' +
                   'hover:-translate-y-1 transition ease-in-out duration-200'
                 }
-                onClick={() => handleSocialButtonClick('https://instagram.com')}
+                onClick={() => handleSocialButtonClick(INSTAGRAM_URL)}
               >
                 <Instagram size={25} />
               </button>
