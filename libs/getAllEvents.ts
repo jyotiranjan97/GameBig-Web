@@ -79,8 +79,6 @@ export const fetchEventsDataByUid = async (uid: string) => {
     const querySnapshot = await eventRef.get();
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      console.log(data);
-
       const eventData = {
         id: doc.id,
         gameCode: data.gameCode,

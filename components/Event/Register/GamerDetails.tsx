@@ -71,7 +71,7 @@ export default function GamerDetails({
         const docRef = await db
           .collection('events')
           .doc(eventId)
-          .collection('teams')
+          .collection('participants')
           .add({
             inGameLead: team.inGameLead,
             gamers: gamersArray,
