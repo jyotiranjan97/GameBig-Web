@@ -29,7 +29,7 @@ export default function GamerDetails({ eventData, setIsRegistered }: Props) {
     await db
       .collection('events')
       .doc(eventData.id)
-      .collection('teams')
+      .collection('participants')
       .add({
         gamers,
         uids: [uid],
