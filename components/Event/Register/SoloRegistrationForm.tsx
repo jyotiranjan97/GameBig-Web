@@ -41,18 +41,6 @@ export default function GamerDetails({ eventData, setIsRegistered }: Props) {
       .catch((error) => {
         console.log('Error adding documents: ', error);
       });
-    await db
-      .collection('users')
-      .doc(uid)
-      .collection('events')
-      .doc(eventData.id)
-      .set(eventData)
-      .then(() => {
-        console.log('Registrtion Done');
-      })
-      .catch((error) => {
-        console.log('Error adding documents: ', error);
-      });
   };
 
   return (

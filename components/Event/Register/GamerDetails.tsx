@@ -41,28 +41,10 @@ export default function GamerDetails({
     });
     if (gamersArray.length === teamSize) {
       saveGamerDetails(gamersArray, uids);
-      addEventToUsers(uids);
       setGamers({});
       setIsRegistered(true);
       onCancel();
     }
-  };
-
-  const addEventToUsers = (uids: string[]) => {
-    uids.forEach(async (uid) => {
-      await db
-        .collection('users')
-        .doc(uid)
-        .collection('events')
-        .doc(eventId)
-        .set(eventData)
-        .then(() => {
-          console.log('Registrtion Done');
-        })
-        .catch((error) => {
-          console.log('Error adding documents: ', error);
-        });
-    });
   };
 
   const saveGamerDetails = async (gamersArray: GamerData[], uids: string[]) => {
