@@ -5,6 +5,7 @@ import TrophyIcon from '../../UI/Icons/NavIcons/TrophyIcon';
 import MessageIcon from '../../UI/Icons/NavIcons/MessageIcon';
 import FriendsIcon from '../../UI/Icons/NavIcons/FriendsIcon';
 import JoinIcon from '../../UI/Icons/NavIcons/JoinIcon';
+import HomeIcon from '../../UI/Icons/NavIcons/HomeIcon';
 import { useAuth } from '../../../context/authContext';
 import { useMessages } from '@/context/messageContext';
 
@@ -20,9 +21,16 @@ export default function PrimaryNavigationItems() {
       <NavigationItem
         href="/"
         isActive={router.pathname === '/'}
+        toolTip="Home"
+      >
+        <HomeIcon isActive={router.pathname === '/'} size={33} />
+      </NavigationItem>
+      <NavigationItem
+        href="/openings"
+        isActive={router.pathname === '/openings'}
         toolTip="Openings"
       >
-        <JoinIcon isActive={router.pathname === '/'} size={33} />
+        <JoinIcon isActive={router.pathname === '/openings'} size={33} />
       </NavigationItem>
       <NavigationItem
         href="/events"

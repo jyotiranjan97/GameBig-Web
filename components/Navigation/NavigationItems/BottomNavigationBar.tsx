@@ -4,6 +4,7 @@ import PageIcon from '../../UI/Icons/NavIcons/PageIcon';
 import MessageIcon from '../../UI/Icons/NavIcons/MessageIcon';
 import FriendsIcon from '../../UI/Icons/NavIcons/FriendsIcon';
 import JoinIcon from '../../UI/Icons/NavIcons/JoinIcon';
+import HomeIcon from '../../UI/Icons/NavIcons/HomeIcon';
 import TrophyIcon from '../../UI/Icons/NavIcons/TrophyIcon';
 import { useAuth } from '../../../context/authContext';
 import { useMessages } from '@/context/messageContext';
@@ -24,7 +25,7 @@ function BottomNavigationBar() {
         }
       >
         <div className="flex w-full justify-evenly space-x-1">
-          {/** Teamup */}
+          {/** Home */}
           <Link href="/" passHref>
             <a className="text-gray-600 focus:text-indigo-500 hover:text-indigo-500 py-0.5 px-1.5">
               <span className="flex justify-center items-center">
@@ -34,6 +35,28 @@ function BottomNavigationBar() {
                 className={
                   'text-xs text-gray-400 -mt-0.5 -ml-1.5 flex flex-1 justify-center ' +
                   (router.pathname === '/'
+                    ? 'text-indigo-600 font-medium'
+                    : 'text-gray-600')
+                }
+              >
+                Openings
+              </span>
+            </a>
+          </Link>
+
+          {/** Teamup */}
+          <Link href="/openings" passHref>
+            <a className="text-gray-600 focus:text-indigo-500 hover:text-indigo-500 py-0.5 px-1.5">
+              <span className="flex justify-center items-center">
+                <JoinIcon
+                  isActive={router.pathname === '/openings'}
+                  size={32}
+                />
+              </span>
+              <span
+                className={
+                  'text-xs text-gray-400 -mt-0.5 -ml-1.5 flex flex-1 justify-center ' +
+                  (router.pathname === '/openings'
                     ? 'text-indigo-600 font-medium'
                     : 'text-gray-600')
                 }
