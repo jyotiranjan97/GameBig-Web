@@ -1,7 +1,9 @@
 import Head from 'next/head';
+import { GetServerSideProps } from 'next';
 import Aux from 'hoc/Auxiliary/Auxiliary';
+import CreatePost from '@/components/Home/CreatePost';
 
-const Home = () => {
+const Home = ({ posts }: any) => {
   return (
     <div className="flex flex-col sm:static w-full sm:px-10 px-0">
       <Head>
@@ -11,8 +13,19 @@ const Home = () => {
         <link rel="manifest" href="/manifest.json" />
       </Head>
       <Aux>
-        <div className={'flex mt-3 md:w-2/3 xl:w-1/2 sm:mx-auto mx-2'}>
-          <span className="text-xl text-gray-50">Home</span>
+        <CreatePost />
+        <div className="flex flex-col">
+          {posts &&
+            posts.message.map((item: any, index: any) => {
+              return (
+                <span
+                  key={index}
+                  className="text-xl text-white fonr-sans my-4 mx-8"
+                >
+                  {item.text}
+                </span>
+              );
+            })}
         </div>
       </Aux>
     </div>
@@ -20,3 +33,22 @@ const Home = () => {
 };
 
 export default Home;
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  let { DEV_URL } = process.env;
+  let response = await fetch(`${DEV_URL}/api/posts`, {
+    method: 'GET',
+  });
+  let data;
+  try {
+    data = await response.json();
+  } catch (err) {
+    console.log(err);
+  }
+
+  return {
+    props: {
+      posts: data,
+    },
+  };
+};
