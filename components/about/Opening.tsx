@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import Lottie from 'react-lottie';
 import Link from 'next/link';
-import animationData from '@public/handshake_lottie.json';
+import animationData from '@public/find_people_lottie.json';
 
 const Opening: FC = () => {
   const defaultOptions = {

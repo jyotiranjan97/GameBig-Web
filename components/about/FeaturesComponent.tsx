@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import Link from 'next/link';
 import PeopleConnect from './PeopleConnect';
 import Opening from './Opening';
 import ParticipateEvent from './ParticipateEvent';

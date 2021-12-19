@@ -3,35 +3,24 @@ import Link from 'next/link';
 
 const LandingComponent: FC = () => {
   return (
-    <div className="bg-black relative">
+    <div className="bg-black md:relative lg:static">
       <div className="container mx-auto px-6 md:px-12 relative z-10 flex items-center py-24 xl:py-40">
         <div className="lg:w-3/5 xl:w-2/5 flex flex-col items-start relative z-10">
-          <span className="font-medium tracking-wide uppercase text-indigo-500">
-            Game! with GameBig
-          </span>
-
-          <h1 className="font-san text-4xl sm:text-6xl text-red-400 leading-tight mt-4">
-            Connect with Gamers and Win BIG!
+          <h1
+            className={
+              'font-san text-2xl sm:text-4xl font-semibold text-white ' +
+              'leading-tight tracking-wide mt-4'
+            }
+          >
+            Win Big with GameBig!
           </h1>
 
           <div className="max-w-md">
-            <p className="font-sans text-indigo-500 mt-6 text-lg">
+            <p className="font-sans text-indigo-500 font-semibold tracking-wide mt-6 text-lg">
               Connect with gamers, participate in tournaments and build your
               career in ESports
             </p>
           </div>
-
-          <Link href="/openings">
-            <a
-              className={
-                'block bg-indigo-600 hover:bg-indigo-500 py-4 px-6 rounded-md ' +
-                'text-xl font-medium text-white uppercase mt-10 ' +
-                'shadow-md shadow-indigo-500/50'
-              }
-            >
-              Get started
-            </a>
-          </Link>
         </div>
         <svg
           width="1042"
