@@ -1,9 +1,14 @@
 import { FC } from 'react';
 import Link from 'next/link';
+import Facebook from '../UI/Icons/SocialIcons/FacebookIcon';
+import GoogleIcon from '../UI/Icons/SocialIcons/GoogleIcon';
+import { useAuth } from '@/context/authContext';
 
 const LandingComponent: FC = () => {
+  const { signInByFacebook, signInByGoogle } = useAuth();
+
   return (
-    <div className="bg-black md:relative lg:static">
+    <div className="bg-black relative">
       <div className="container mx-auto px-6 md:px-12 relative z-10 flex items-center py-24 xl:py-40">
         <div className="lg:w-3/5 xl:w-2/5 flex flex-col items-start relative z-10">
           <h1
@@ -20,6 +25,29 @@ const LandingComponent: FC = () => {
               Connect with gamers, participate in tournaments and build your
               career in ESports
             </p>
+          </div>
+          <div className="max-w-md mt-10">
+            <div className="flex justify-center">
+              <span className="text-2xl text-gray-100 font-sans">
+                Get started by signing in with
+              </span>
+            </div>
+
+            <div className="flex flex-row justify-center my-2">
+              {/**Facebook Button */}
+              <div className="rounded-full hover:bg-gray-800 py-2 px-2.5 mx-2 cursor-pointer">
+                <Facebook size={80} onClick={signInByFacebook} />
+              </div>
+
+              <span className="text-gray-400 text-lg font-sans my-auto">
+                or
+              </span>
+
+              {/**Google Button */}
+              <div className="rounded-full hover:bg-gray-800 p-6 mx-2 cursor-pointer">
+                <GoogleIcon size={50} onClick={signInByGoogle} />
+              </div>
+            </div>
           </div>
         </div>
         <svg
