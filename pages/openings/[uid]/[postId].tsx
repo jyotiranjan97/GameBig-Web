@@ -4,11 +4,7 @@ import { db } from 'firebase/firebaseClient';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-<<<<<<< HEAD:pages/openings/[uid]/[postId]/index.tsx
-import TeamUpItem from '../../../../components/Openings/TeamUpItem';
-=======
 import TeamUpItem from '@/components/Openings/TeamUpItem';
->>>>>>> main:pages/openings/[uid]/[postId].tsx
 import { TeamUpPost } from '@/utilities/openings/TeamUpPost';
 import { BasicUserType } from '@/utilities/types';
 import TextButton from '@/components/UI/Buttons/TextButton';
