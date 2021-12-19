@@ -1,5 +1,6 @@
 import { ChangeEvent, useState } from 'react';
 import TextArea from '../UI/Inputs/TextArea';
+import EditorJS from '@editorjs/editorjs';
 
 const CreatePost = () => {
   const [post, setPost] = useState('');
@@ -27,7 +28,9 @@ const CreatePost = () => {
             console.log(response);
           }}
         >
-          <span className="text-xl text-white fonr-sans my-4 mx-8">Post</span>
+          <span className="text-xl text-white font-sans my-4 mx-8 cursor-pointer">
+            Post
+          </span>
         </div>
       </div>
     </div>

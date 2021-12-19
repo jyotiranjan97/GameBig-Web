@@ -24,6 +24,7 @@ moduleExports = withPWA({
       'play-lh.googleusercontent.com',
       'graph.facebook.com',
       'firebasestorage.googleapis.com',
+      'images.unsplash.com',
     ],
   },
   env: {

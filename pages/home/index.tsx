@@ -2,6 +2,7 @@ import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import Aux from 'hoc/Auxiliary/Auxiliary';
 import CreatePost from '@/components/Home/CreatePost';
+import Post from '@/components/Home/Post';
 
 const Home = ({ posts }: any) => {
   return (
@@ -14,18 +15,13 @@ const Home = ({ posts }: any) => {
       </Head>
       <Aux>
         <CreatePost />
-        <div className="flex flex-col">
+        <div className="flex flex-col mt-1">
           {posts &&
-            posts.message.map((item: any, index: any) => {
-              return (
-                <span
-                  key={index}
-                  className="text-xl text-white fonr-sans my-4 mx-8"
-                >
-                  {item.text}
-                </span>
-              );
-            })}
+            posts.message.map((item: any, index: any) => (
+              <div key={index}>
+                <Post post={item} />
+              </div>
+            ))}
         </div>
       </Aux>
     </div>

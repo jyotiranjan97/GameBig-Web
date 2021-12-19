@@ -20,10 +20,10 @@ export default function PrimaryNavigationItems() {
     <ul className="hidden md:flex items-end lg:space-x-10 lg:mr-20">
       <NavigationItem
         href="/"
-        isActive={router.pathname === '/'}
+        isActive={router.pathname === '/home'}
         toolTip="Home"
       >
-        <HomeIcon isActive={router.pathname === '/'} size={33} />
+        <HomeIcon isActive={router.pathname === '/home'} size={33} />
       </NavigationItem>
       <NavigationItem
         href="/openings"
