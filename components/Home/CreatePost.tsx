@@ -19,7 +19,7 @@ const CreatePost = () => {
       />
       <div className="flex justify-end mr-2">
         <div
-          className="rounded-sm bg-indigo-600"
+          className="rounded-md bg-indigo-600 px-4 py-1"
           onClick={async () => {
             let response = await fetch('/api/posts', {
               method: 'POST',
@@ -28,7 +28,7 @@ const CreatePost = () => {
             console.log(response);
           }}
         >
-          <span className="text-xl text-white font-sans my-4 mx-8 cursor-pointer">
+          <span className="text-xl text-white font-sans cursor-pointer">
             Post
           </span>
         </div>

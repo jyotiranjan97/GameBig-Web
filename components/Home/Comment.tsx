@@ -9,7 +9,7 @@ const Post = ({ post, setSelectedPost, openModal }: any) => {
   const { text, image } = post;
   return (
     <div
-      className="w-full flex flex-col mx-auto bg-gray-900 rounded-md mb-1 px-4 py-1 "
+      className="w-11/12 md:w-1/2 flex flex-col mx-auto bg-gray-900 rounded-md mb-1 px-4 py-1 "
       onClick={() => {
         setSelectedPost(post);
         openModal();

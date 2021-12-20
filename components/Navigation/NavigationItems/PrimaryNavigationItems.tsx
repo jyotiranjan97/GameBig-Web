@@ -19,7 +19,7 @@ export default function PrimaryNavigationItems() {
   return (
     <ul className="hidden md:flex items-end lg:space-x-10 lg:mr-20">
       <NavigationItem
-        href="/"
+        href="/home"
         isActive={router.pathname === '/home'}
         toolTip="Home"
       >
