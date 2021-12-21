@@ -8,8 +8,15 @@ export async function addCommentOnPost(
   try {
     // connect to the database
     let { db } = await connectToDatabase();
+    const commentData = JSON.parse(req.body);
     // add the post
-    await db.collection('commentsOnPost').insertOne(JSON.parse(req.body));
+    await db.collection('commentsOnPost').insertOne(commentData);
+    await db.collection('posts').updateOne(
+      {
+        _id: ObjectId(commentData.postId),
+      },
+      { $inc: { noOfComments: 1 } }
+    );
     // return a message
 
     return res.json({
@@ -57,6 +64,8 @@ export async function updateCommentOnPost(
   req: { body: any },
   res: { json: (arg0: { message: string; success: boolean }) => any }
 ) {
+  console.log('=====================');
+
   try {
     // connect to the database
     let { db } = await connectToDatabase();

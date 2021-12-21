@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 type Props = {
   size: number;
-  onClick?: () => void;
+  onClick?: (e: any) => void;
 };
 
 const Icon: FC<Props> = ({ size, onClick }: Props) => {

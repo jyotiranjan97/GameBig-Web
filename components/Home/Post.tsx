@@ -1,38 +1,63 @@
+import { useState } from 'react';
 import Image from 'next/image';
 import MoreIcon from '../UI/Icons/ProfileIcons/MoreIcon';
 import FilledHeartIcon from '../UI/Icons/Post/FilledHeart';
 import EmptyHeartIcon from '../UI/Icons/Post/EmptyHeart';
 import CommentsIcon from '../UI/Icons/Post/Comments';
 import ShareIcon from '../UI/Icons/Others/ShareIcon';
+import HorizontalProfile from '../Profile/HorizontalProfile';
+import { useAuth } from '@/context/authContext';
 
-const Post = ({ post, setSelectedPost, openModal }: any) => {
-  const { text, image } = post;
+const axios = require('axios').default;
+
+const Post = ({ post, setSelectedPost, openModal, isModalOpen }: any) => {
+  const { userData } = useAuth();
+  const { text, image, user, noOfLikes, noOfComments, likedBy } = post;
+
+  const isLikedByUser = likedBy.includes(user.uid);
+  const [isLiked, setIsLiked] = useState(isLikedByUser);
+  const [likes, setlikes] = useState(noOfLikes);
+
+  async function likehandler(event: MouseEvent) {
+    event.stopPropagation();
+    try {
+      axios.get(`/api/likePost`, {
+        params: { postId: post._id, likedBy: userData.uid },
+      });
+      setIsLiked(true);
+      setlikes(likes + 1);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function unLikehandler(event: MouseEvent) {
+    event.stopPropagation();
+    try {
+      axios.get(`/api/likePost`, {
+        params: { postId: post._id, unLikedBy: userData.uid },
+      });
+      setIsLiked(false);
+      setlikes(likes - 1);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  function showModal() {
+    if (!isModalOpen) {
+      setSelectedPost(post);
+      openModal();
+    }
+  }
+
   return (
     <div
       className="w-full flex flex-col mx-auto bg-gray-900 rounded-md mb-1 px-4 py-1 "
-      onClick={() => {
-        setSelectedPost(post);
-        openModal();
-      }}
+      onClick={showModal}
     >
       <div className="flex items-center	justify-between">
-        <div className="gap-3.5	flex items-center my-1">
-          <div className="relative h-8 w-8 md:h-12 md:w-12 cursor-pointer">
-            <Image
-              src="https://images.unsplash.com/photo-1617077644557-64be144aa306?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80"
-              className="rounded-full"
-              alt="Picture of a friend"
-              layout="fill"
-              objectFit="cover"
-            />
-          </div>
-          <div className="flex flex-col">
-            <b className="mb-2 capitalize font-sans text-gray-50">
-              Sofia Müller
-            </b>
-            <time className="text-gray-400 text-xs">06 August at 09.15 PM</time>
-          </div>
-        </div>
+        <HorizontalProfile user={user} isTransparent />
         <div className="rounded-full h-3.5 flex	items-center justify-center">
           <MoreIcon size={24} />
         </div>
@@ -52,24 +77,22 @@ const Post = ({ post, setSelectedPost, openModal }: any) => {
         </div>
       )}
       <div className=" h-16  flex items-center justify-around	">
-        <div
-          className="flex items-center	gap-3	"
-          onClick={() => {
-            setSelectedPost(post);
-            openModal();
-          }}
-        >
+        <div className="flex items-center	gap-3	" onClick={showModal}>
           <CommentsIcon size={24} />
-          <div className="text-sm text-gray-50">10</div>
+          <div className="text-sm text-gray-50">{noOfComments}</div>
         </div>
         <div className="flex items-center	gap-3">
-          <FilledHeartIcon size={24} />
-          <div className="text-sm text-gray-50">5</div>
+          {isLiked ? (
+            <FilledHeartIcon size={24} onClick={unLikehandler} />
+          ) : (
+            <EmptyHeartIcon size={24} onClick={likehandler} />
+          )}
+          <div className="text-sm text-gray-50">{likes}</div>
         </div>
-        <div className="flex items-center	gap-3">
+        {/* <div className="flex items-center	gap-3">
           <ShareIcon size={24} />
           <div className="text-sm text-gray-50">10</div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

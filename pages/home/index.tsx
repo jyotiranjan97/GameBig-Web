@@ -1,4 +1,4 @@
-import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { useState } from 'react';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import Aux from 'hoc/Auxiliary/Auxiliary';
@@ -35,12 +35,17 @@ const Home = ({ posts }: any) => {
                   post={item}
                   setSelectedPost={setSelectedPost}
                   openModal={openModal}
+                  isModalOpen={open}
                 />
               </div>
             ))}
         </div>
         <Modal isOpen={open} closeModal={closeModal}>
-          <PostDetails post={selectedPost} closeModal={closeModal} />
+          <PostDetails
+            isModalOpen={open}
+            post={selectedPost}
+            closeModal={closeModal}
+          />
         </Modal>
       </Aux>
     </div>

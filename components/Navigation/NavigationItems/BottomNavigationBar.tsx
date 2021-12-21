@@ -29,7 +29,7 @@ function BottomNavigationBar() {
           <Link href="/home" passHref>
             <a className="text-gray-600 focus:text-indigo-500 hover:text-indigo-500 py-0.5 px-1.5">
               <span className="flex justify-center items-center">
-                <JoinIcon isActive={router.pathname === '/home'} size={32} />
+                <HomeIcon isActive={router.pathname === '/home'} size={32} />
               </span>
               <span
                 className={
@@ -139,37 +139,6 @@ function BottomNavigationBar() {
                 }
               >
                 People
-              </span>
-            </a>
-          </Link>
-
-          {/**Message */}
-          <Link href="/messages" passHref>
-            <a className="text-gray-600 focus:text-indigo-500 hover:text-indigo-500 py-0.5 px-1.5">
-              <span className="flex justify-center items-center pt-0.5">
-                <div>
-                  <MessageIcon
-                    isActive={router.pathname === '/messages'}
-                    size={30}
-                  />
-                  {unseen > 0 ? (
-                    <div className="fixed mt-[-1.4rem] ml-[1.2rem] rounded-full h-5 w-5 bg-red-500 px-0.5">
-                      <span className="text-gray-50 text-sm font-semibold m-auto">
-                        {unseen}
-                      </span>
-                    </div>
-                  ) : null}
-                </div>
-              </span>
-              <span
-                className={
-                  'text-xs text-gray-400 -mt-0.5 flex flex-1 justify-center ' +
-                  (router.pathname === '/messages'
-                    ? 'text-indigo-600 font-medium'
-                    : 'text-gray-600')
-                }
-              >
-                Message
               </span>
             </a>
           </Link>

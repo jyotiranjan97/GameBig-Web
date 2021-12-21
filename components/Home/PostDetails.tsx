@@ -2,10 +2,14 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Post from './Post';
 import TextArea from '../UI/Inputs/TextArea';
+import { useAuth } from '@/context/authContext';
 
 let { BASE_URL } = process.env;
 
-const PostDetails = ({ post, closeModal }: any) => {
+const PostDetails = ({ post, closeModal, isModalOpen }: any) => {
+  const {
+    userData: { uid, username, photoURL, name },
+  } = useAuth();
   const [text, setText] = useState('');
   const [comments, setComments] = useState([]);
 
@@ -25,10 +29,20 @@ const PostDetails = ({ post, closeModal }: any) => {
   }, [post._id]);
 
   async function saveComment() {
+    const commentData = {
+      postId: post._id,
+      text,
+      createdAt: new Date(),
+      user: { uid, username, photoURL, name },
+      noOfLikes: 0,
+      noOfreplies: 0,
+      likedBy: [],
+      repliedBy: [],
+    };
     try {
       let response = await fetch(`${BASE_URL}/api/commentOnPost`, {
         method: 'POST',
-        body: JSON.stringify({ postId: post._id, text: text }),
+        body: JSON.stringify(commentData),
       });
       setText('');
     } catch (err) {
@@ -38,7 +52,7 @@ const PostDetails = ({ post, closeModal }: any) => {
 
   return (
     <div className="w-11/12 md:w-2/3 mx-auto mb-8">
-      <Post post={post} />
+      <Post post={post} isModalOpen={isModalOpen} />
       <div>
         <TextArea
           labelName="Comment"
