@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-import Image from 'next/image';
 import Post from './Post';
+import Comment from './Comment';
 import TextArea from '../UI/Inputs/TextArea';
 import { useAuth } from '@/context/authContext';
 
@@ -76,11 +76,7 @@ const PostDetails = ({ post, closeModal, isModalOpen }: any) => {
       </div>
       <div className="flex flex-col mt-3">
         {comments.map((item: any, index: any) => (
-          <div className="bg-slate-900 rounded-md mb-1 px-2 py-1" key={index}>
-            <span className="text-lg text-white font-sans cursor-pointer">
-              {item.text}
-            </span>
-          </div>
+          <Comment key={index} comment={item} />
         ))}
       </div>
     </div>
