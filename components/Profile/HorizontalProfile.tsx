@@ -32,7 +32,7 @@ const HorizontalProfile = ({
               src={user.photoURL}
               alt="Picture of a friend"
               layout="fill"
-              objectFit="contain"
+              objectFit="cover"
               className="rounded-full"
             />
           </div>
