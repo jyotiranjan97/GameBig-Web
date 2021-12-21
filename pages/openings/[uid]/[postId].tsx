@@ -9,6 +9,7 @@ import { TeamUpPost } from '@/utilities/openings/TeamUpPost';
 import { BasicUserType } from '@/utilities/types';
 import TextButton from '@/components/UI/Buttons/TextButton';
 import ProfileCard from '@/components/Profile/ProfileCard';
+import HorizontalProfile from '@/components/Profile/HorizontalProfile';
 
 export default function Home() {
   const {
@@ -75,15 +76,16 @@ export default function Home() {
               }
             >
               {joinees.map((joinee) => (
-                <ProfileCard
-                  user={{
-                    name: joinee.name,
-                    uid: joinee.uid,
-                    photoURL: joinee.photoURL || '',
-                    username: joinee.username,
-                  }}
-                  key={joinee.uid}
-                />
+                <div key={joinee.uid}>
+                  <HorizontalProfile
+                    user={{
+                      name: joinee.name,
+                      uid: joinee.uid,
+                      photoURL: joinee.photoURL || '',
+                      username: joinee.username,
+                    }}
+                  />
+                </div>
               ))}
             </div>
           ) : (
