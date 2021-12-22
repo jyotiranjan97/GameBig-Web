@@ -2,7 +2,7 @@ import Image from 'next/image';
 import MoreIcon from '../UI/Icons/ProfileIcons/MoreIcon';
 import { useRouter } from 'next/router';
 
-const Post = ({ comment }: any) => {
+const Comment = ({ comment }: any) => {
   const { text, image, user } = comment;
   const router = useRouter();
   const openProfile = (username: string) => {
@@ -45,4 +45,4 @@ const Post = ({ comment }: any) => {
   );
 };
 
-export default Post;
+export default Comment;

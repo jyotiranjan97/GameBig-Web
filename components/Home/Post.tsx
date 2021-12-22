@@ -53,7 +53,7 @@ const Post = ({ post, setSelectedPost, openModal, isModalOpen }: any) => {
 
   return (
     <div
-      className="w-full flex flex-col mx-auto bg-gray-900 rounded-md mb-1 px-4 py-1 "
+      className="w-full flex flex-col mx-auto bg-gray-900 rounded-md m-1 px-4 py-1 "
       onClick={showModal}
     >
       <div className="flex items-center	justify-between">
