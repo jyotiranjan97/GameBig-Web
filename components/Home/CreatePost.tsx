@@ -2,16 +2,17 @@ import { ChangeEvent, useState } from 'react';
 import TextArea from '../UI/Inputs/TextArea';
 import EditorJS from '@editorjs/editorjs';
 import { useAuth } from '@/context/authContext';
+import { PostType } from '@/utilities/post/PostType';
 
 const CreatePost = () => {
   const {
     userData: { uid, username, photoURL, name },
   } = useAuth();
-  const [post, setPost] = useState('');
+  const [content, setContent] = useState('');
 
   async function savePost() {
-    const postData = {
-      text: post,
+    const postData: PostType = {
+      content: content,
       createdAt: new Date(),
       user: { uid, username, photoURL, name },
       noOfLikes: 0,
@@ -24,7 +25,7 @@ const CreatePost = () => {
       method: 'POST',
       body: JSON.stringify(postData),
     });
-    setPost('');
+    setContent('');
   }
 
   return (
@@ -34,9 +35,9 @@ const CreatePost = () => {
         name="post"
         onChangeHandler={(e: ChangeEvent) => {
           const target = e.target as HTMLInputElement;
-          setPost(target.value);
+          setContent(target.value);
         }}
-        value={post}
+        value={content}
         placeHolder="What's on your mind?"
       />
       <div className="flex justify-end mr-2">

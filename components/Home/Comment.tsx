@@ -1,9 +1,10 @@
 import Image from 'next/image';
 import MoreIcon from '../UI/Icons/ProfileIcons/MoreIcon';
 import { useRouter } from 'next/router';
+import { CommentType } from '@/utilities/comment/commentTypes';
 
-const Comment = ({ comment }: any) => {
-  const { text, image, user } = comment;
+const Comment = ({ comment }: { comment: CommentType }) => {
+  const { content, user } = comment;
   const router = useRouter();
   const openProfile = (username: string) => {
     router.push(`/profile/${username}`);
@@ -39,7 +40,7 @@ const Comment = ({ comment }: any) => {
         <MoreIcon size={20} />
       </div>
       <span className="text-sm md:text-base text-white font-sans cursor-pointer ml-6">
-        {text}
+        {content}
       </span>
     </div>
   );

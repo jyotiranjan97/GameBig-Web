@@ -3,6 +3,7 @@ import Post from './Post';
 import Comment from './Comment';
 import TextArea from '../UI/Inputs/TextArea';
 import { useAuth } from '@/context/authContext';
+import { CommentType } from '@/utilities/comment/commentTypes';
 
 let { BASE_URL } = process.env;
 
@@ -10,7 +11,7 @@ const PostDetails = ({ post, closeModal, isModalOpen }: any) => {
   const {
     userData: { uid, username, photoURL, name },
   } = useAuth();
-  const [text, setText] = useState('');
+  const [content, setContent] = useState('');
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
@@ -29,13 +30,13 @@ const PostDetails = ({ post, closeModal, isModalOpen }: any) => {
   }, [post._id]);
 
   async function saveComment() {
-    const commentData = {
+    const commentData: CommentType = {
       postId: post._id,
-      text,
+      content: content,
       createdAt: new Date(),
       user: { uid, username, photoURL, name },
       noOfLikes: 0,
-      noOfreplies: 0,
+      noOfReplies: 0,
       likedBy: [],
       repliedBy: [],
     };
@@ -44,7 +45,7 @@ const PostDetails = ({ post, closeModal, isModalOpen }: any) => {
         method: 'POST',
         body: JSON.stringify(commentData),
       });
-      setText('');
+      setContent('');
     } catch (err) {
       console.log(err);
     }
@@ -59,9 +60,9 @@ const PostDetails = ({ post, closeModal, isModalOpen }: any) => {
           name="comment"
           onChangeHandler={(e: ChangeEvent) => {
             const target = e.target as HTMLInputElement;
-            setText(target.value);
+            setContent(target.value);
           }}
-          value={text}
+          value={content}
         />
         <div className="flex justify-end mr-2">
           <div
@@ -75,7 +76,7 @@ const PostDetails = ({ post, closeModal, isModalOpen }: any) => {
         </div>
       </div>
       <div className="flex flex-col mt-3">
-        {comments.map((item: any, index: any) => (
+        {comments.map((item: CommentType, index: number) => (
           <Comment key={index} comment={item} />
         ))}
       </div>

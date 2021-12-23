@@ -64,8 +64,6 @@ export async function updateCommentOnPost(
   req: { body: any },
   res: { json: (arg0: { message: string; success: boolean }) => any }
 ) {
-  console.log('=====================');
-
   try {
     // connect to the database
     let { db } = await connectToDatabase();

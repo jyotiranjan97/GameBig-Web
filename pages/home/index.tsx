@@ -6,6 +6,7 @@ import CreatePost from '@/components/Home/CreatePost';
 import Post from '@/components/Home/Post';
 import Modal from '@/components/UI/Modal/Modal';
 import PostDetails from '@/components/Home/PostDetails';
+import { PostType } from '@/utilities/post/PostType';
 
 const Home = ({ posts }: any) => {
   const [open, setOpen] = useState(false);
@@ -29,7 +30,7 @@ const Home = ({ posts }: any) => {
         <CreatePost />
         <div className="w-11/12 md:w-1/2 mx-auto flex flex-col mt-1">
           {posts &&
-            posts.message.map((item: any, index: any) => (
+            posts.message.map((item: PostType, index: number) => (
               <div key={index}>
                 <Post
                   post={item}
