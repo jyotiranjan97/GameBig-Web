@@ -52,6 +52,36 @@ export async function getPosts(
   }
 }
 
+export async function getPostsByUid(
+  req: any,
+  res: { json: (arg0: { message: any; success: boolean }) => any }
+) {
+  try {
+    const { uid } = req.query;
+    console.log(uid);
+
+    // connect to the database
+    let { db } = await connectToDatabase();
+    // fetch the posts
+    let posts = await db
+      .collection('posts')
+      .find({ 'user.uid': { $eq: uid } })
+      .sort({ published: -1 })
+      .toArray();
+    // return the posts
+    return res.json({
+      message: JSON.parse(JSON.stringify(posts)),
+      success: true,
+    });
+  } catch (error) {
+    // return the error
+    return res.json({
+      message: new Error(error as string).message,
+      success: false,
+    });
+  }
+}
+
 export async function updatePost(
   req: { body: any },
   res: { json: (arg0: { message: string; success: boolean }) => any }

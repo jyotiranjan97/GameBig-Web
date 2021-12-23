@@ -58,7 +58,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     if (typeof username == 'string') {
       userData = await getUser(username);
       let { BASE_URL } = process.env;
-      let response = await fetch(`${BASE_URL}/api/posts`, {
+      let response = await fetch(`${BASE_URL}/api/posts/?uid=${userData.uid}`, {
         method: 'GET',
       });
       posts = await response.json();
