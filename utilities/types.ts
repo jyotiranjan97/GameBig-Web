@@ -31,8 +31,6 @@ export interface UserData {
   instagramLink?: string | undefined;
   twitterLink?: string | undefined;
   redditLink?: string | undefined;
-  linkedPageId?: string | null;
-  linkedPageName?: string | null;
   fcmToken?: string | null;
   games?: string[];
   followersCount?: number;

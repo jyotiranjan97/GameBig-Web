@@ -4,14 +4,9 @@ import PageIcon from '../../UI/Icons/NavIcons/PageIcon';
 import TrophyIcon from '../../UI/Icons/NavIcons/TrophyIcon';
 import FriendsIcon from '../../UI/Icons/NavIcons/FriendsIcon';
 import JoinIcon from '../../UI/Icons/NavIcons/JoinIcon';
-import HomeIcon from '../../UI/Icons/NavIcons/HomeIcon';
-import { useAuth } from '../../../context/authContext';
 import { useMessages } from '@/context/messageContext';
 
 export default function PrimaryNavigationItems() {
-  const {
-    userData: { linkedPageId },
-  } = useAuth();
   const router = useRouter();
   const { unseen } = useMessages();
 
@@ -33,7 +28,7 @@ export default function PrimaryNavigationItems() {
       </NavigationItem>
 
       <NavigationItem
-        href={linkedPageId ? `/page/${linkedPageId}/events` : `/page`}
+        href={`/page`}
         isActive={
           router.pathname === '/page/[pageId]/events' ||
           router.pathname === '/page/[pageId]' ||

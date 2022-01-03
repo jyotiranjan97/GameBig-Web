@@ -2,13 +2,12 @@ import router from 'next/router';
 import { useFormik } from 'formik';
 import { PageFormData } from '@/utilities/page/types';
 import { validationSchema } from '@/utilities/page/validator';
-import { addPage, addPageIdtoAdminUser, updatePage } from '@/libs/addPage';
+import { addPage, updatePage } from '@/libs/addPage';
 import { useAuth } from '@/context/authContext';
 import FixedButton from '@/components/UI/Buttons/FixedButton';
 import FormInput from '@/components/UI/Inputs/FormInput';
 import TextArea from '@/components/UI/Inputs/TextArea';
 import ResponsiveButton from '@/components/UI/Buttons/ResponsiveButton';
-import SelectDropDown from '@/components/UI/Select/SelectDropDown';
 
 const scrollToTop = () => {
   window.scrollTo({
@@ -19,7 +18,7 @@ const scrollToTop = () => {
 
 const initialValues: PageFormData = {
   name: '',
-  category: '',
+  category: 'organizer',
   about: '',
   location: '',
   email: '',
@@ -32,6 +31,7 @@ const initialValues: PageFormData = {
   instagram: '',
   twitter: '',
   reddit: '',
+  admins: [] as string[],
 };
 
 type Props = {
@@ -39,7 +39,7 @@ type Props = {
 };
 
 function CreatePageForm({ pageData }: Props) {
-  const { userData, refetchUserData } = useAuth();
+  const { userData } = useAuth();
 
   const formik = useFormik({
     initialValues: pageData || initialValues,
@@ -47,18 +47,10 @@ function CreatePageForm({ pageData }: Props) {
     onSubmit: async (value, { resetForm }) => {
       if (pageData && pageData.id) {
         updatePage(value, pageData.id);
-        if (userData.linkedPageName !== value.name) {
-          refetchUserData();
-          await addPageIdtoAdminUser(userData.uid, value.name, pageData.id);
-        }
         router.push(`/page/${pageData.id}`);
       } else {
-        const pageId = await addPage(value);
-        if (pageId) {
-          await addPageIdtoAdminUser(userData.uid, value.name, pageId);
-          refetchUserData();
-          router.push(`/page/${pageId}`);
-        }
+        const pageId = await addPage({ ...value, admins: [userData.uid] });
+        router.push(`/page/${pageId}`);
       }
       resetForm();
     },
@@ -97,20 +89,6 @@ function CreatePageForm({ pageData }: Props) {
               error={Boolean(formik.errors.name)}
               errorMessage={formik.errors.name}
             />
-            <div className="w-full">
-              <SelectDropDown
-                handleChange={(item) => {
-                  formik.setFieldValue('category', item.code);
-                }}
-                name="category"
-                label="Category"
-                menuItems={[
-                  { code: 'organizer', text: 'Esports Organization' },
-                  { code: 'clan', text: 'Esports Clan' },
-                ]}
-                propToShow="text"
-              />
-            </div>
             <FormInput
               labelName="Official Email*"
               name="email"

@@ -13,6 +13,7 @@ import { EventData } from '../../../../utilities/eventItem/types';
 import CreateEventForm from '../../../../components/Event/CreateEvent/CreateEventForm';
 import Modal from '@/components/UI/Modal/Modal';
 import SelectGame from '@/components/Game/SelectGame';
+import { useAuth } from '@/context/authContext';
 
 interface Props {
   pageData: PageFormData | undefined;
@@ -20,9 +21,9 @@ interface Props {
 }
 
 export default function Events({ pageData, events }: Props) {
+  const { userData } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
-
   const [gameCode, setGameCode] = useState('');
 
   const closeModal = () => {
@@ -64,7 +65,8 @@ export default function Events({ pageData, events }: Props) {
       {pageData ? (
         <>
           <PageHeader data={pageData} />
-          {pageData.id && pageData.category === 'organizer' ? (
+          {pageData.admins.includes(userData.uid) &&
+          pageData.category === 'organizer' ? (
             <CreateEventButton onClick={openModal} />
           ) : null}
           {events.length === 0 ? emptyEventsComponent : hostedEvents}

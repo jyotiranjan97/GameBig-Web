@@ -69,10 +69,7 @@ function BottomNavigationBar() {
           </Link>
 
           {/** Page */}
-          <Link
-            href={linkedPageId ? `/page/${linkedPageId}/events` : `/page`}
-            passHref
-          >
+          <Link href={`/page`} passHref>
             <a className="text-gray-600 focus:text-indigo-500 hover:text-indigo-500 py-0.5 px-1.5">
               <span className="flex justify-center items-center pt-0.5">
                 <PageIcon
