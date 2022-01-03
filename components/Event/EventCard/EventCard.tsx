@@ -73,7 +73,7 @@ const EventCard: FC<Props> = ({ data, isPageOwner }: Props) => {
           <EventCardAvatar content={data.linkedPageName[0]} />
           <div>
             <span
-              className="text-gray-300 text-lg font-semibold font-sans tracking-wide mx-3"
+              className="text-gray-300 text-lg font-semibold font-sans tracking-wide mx-3 hover:underline cursor-pointer"
               onClick={openLinkedpage}
             >
               {data.linkedPageName}
