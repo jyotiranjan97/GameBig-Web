@@ -16,7 +16,7 @@ import SelectGame from '@/components/Game/SelectGame';
 import { useAuth } from '@/context/authContext';
 
 interface Props {
-  pageData: PageFormData | undefined;
+  pageData: PageFormData;
   events: EventData[];
 }
 
@@ -85,7 +85,14 @@ export default function Events({ pageData, events }: Props) {
                   gameCode={gameCode}
                 />
               ),
-              2: <CreateEventForm onCancel={closeModal} gameCode={gameCode} />,
+              2: (
+                <CreateEventForm
+                  onCancel={closeModal}
+                  gameCode={gameCode}
+                  pageId={pageData?.id}
+                  pageName={pageData.name}
+                />
+              ),
             }[pageNumber]
           }
         </div>

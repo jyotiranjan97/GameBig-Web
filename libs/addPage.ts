@@ -1,4 +1,4 @@
-import { db } from '../firebase/firebaseClient';
+import firebase, { db } from '../firebase/firebaseClient';
 import { PageFormData } from '../utilities/page/types';
 
 export const addPage = async (data: PageFormData) => {
@@ -15,4 +15,17 @@ export const addPage = async (data: PageFormData) => {
 
 export const updatePage = async (data: PageFormData, pageId: string) => {
   await db.collection('pages').doc(pageId).update(data);
+};
+
+export const addPageIdtoAdminUser = async (userId: string, pageId: string) => {
+  try {
+    await db
+      .collection('users')
+      .doc(userId)
+      .update({
+        linkedPageIds: firebase.firestore.FieldValue.arrayUnion(pageId),
+      });
+  } catch (err) {
+    console.log("Error adding page data to Admin's collection - ", err);
+  }
 };

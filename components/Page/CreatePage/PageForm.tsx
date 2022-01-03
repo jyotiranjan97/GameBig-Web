@@ -2,7 +2,7 @@ import router from 'next/router';
 import { useFormik } from 'formik';
 import { PageFormData } from '@/utilities/page/types';
 import { validationSchema } from '@/utilities/page/validator';
-import { addPage, updatePage } from '@/libs/addPage';
+import { addPage, addPageIdtoAdminUser, updatePage } from '@/libs/addPage';
 import { useAuth } from '@/context/authContext';
 import FixedButton from '@/components/UI/Buttons/FixedButton';
 import FormInput from '@/components/UI/Inputs/FormInput';
@@ -39,7 +39,7 @@ type Props = {
 };
 
 function CreatePageForm({ pageData }: Props) {
-  const { userData } = useAuth();
+  const { userData, setUserData } = useAuth();
 
   const formik = useFormik({
     initialValues: pageData || initialValues,
@@ -50,6 +50,10 @@ function CreatePageForm({ pageData }: Props) {
         router.push(`/page/${pageData.id}`);
       } else {
         const pageId = await addPage({ ...value, admins: [userData.uid] });
+        if (pageId) {
+          await addPageIdtoAdminUser(userData.uid, pageId);
+          setUserData({ ...userData, linkedPageIds: [pageId] });
+        }
         router.push(`/page/${pageId}`);
       }
       resetForm();
