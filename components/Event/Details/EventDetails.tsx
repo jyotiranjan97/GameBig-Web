@@ -11,6 +11,7 @@ import { db } from '../../../firebase/firebaseClient';
 import TextButton from '../../UI/Buttons/TextButton';
 import EventCardAvatar from '../../UI/Avatar/EventCardAvatar';
 import { useUI } from '@/context/uiContext';
+import axios from 'axios';
 
 interface Props {
   data: EventData;
@@ -30,20 +31,21 @@ export default function DetailsAsParticipant({
   const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
-    if (data._id && userData.uid) {
-      db.collection('events')
-        .doc(data._id)
-        .collection('participants')
-        .where('uids', 'array-contains', userData.uid)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            if (doc.data()) {
-              setIsRegistered(true);
-            }
-          });
-        });
-    }
+    const checkRegistration = async () => {
+      if (data._id && userData.uid) {
+        const response = await axios.get(
+          `${process.env.BASE_URL}/api/participants`,
+          {
+            params: {
+              eventId: data._id,
+              uid: userData.uid,
+            },
+          }
+        );
+        setIsRegistered(response.data.message);
+      }
+    };
+    checkRegistration();
   }, [data._id, userData.uid]);
 
   function openLinkedPage() {

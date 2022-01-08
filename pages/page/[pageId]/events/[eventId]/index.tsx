@@ -42,7 +42,7 @@ export default function Event() {
   };
 
   useEffect(() => {
-    const { pageId, eventId } = router.query;
+    const { eventId } = router.query;
     async function fetchEventById() {
       const response = await axios.get(`${process.env.BASE_URL}/api/events`, {
         params: { id: eventId },
@@ -92,7 +92,7 @@ export default function Event() {
           openEditModal={openModal}
         />
 
-        <EventResults eventId={event._id} />
+        {/* <EventResults eventId={event._id} /> */}
         {isPageOwner() ? (
           <Tabs
             tabs={[

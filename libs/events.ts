@@ -17,8 +17,6 @@ export async function addEvent(
       success: true,
     });
   } catch (error) {
-    console.log(error);
-
     return res.json({
       message: new Error(error as string).message,
       success: false,
@@ -36,8 +34,8 @@ export async function getEvents(
     // fetch the events
     let events = await db
       .collection('events')
-      .find({})
-      .sort({ published: -1 })
+      .find({ startTime: { $gte: new Date().toISOString() } })
+      .sort({ startTime: 1 })
       .toArray();
     // return the events
     return res.json({
@@ -66,7 +64,7 @@ export async function getEventsByPageId(
     let events = await db
       .collection('events')
       .find({ pageId: { $eq: pageId } })
-      .sort({ published: -1 })
+      .sort({ startTime: -1 })
       .toArray();
     // return the events
     return res.json({
@@ -117,13 +115,13 @@ export async function updateEvent(
   try {
     // connect to the database
     let { db } = await connectToDatabase();
-
+    const { id, data } = req.body;
     // update the published status of the event
     await db.collection('events').updateOne(
       {
-        _id: new ObjectId(req.body),
+        _id: new ObjectId(id),
       },
-      { $set: { published: true } }
+      data
     );
 
     // return a message

@@ -36,7 +36,13 @@ export default function CreateEventForm({
       } else {
         if (pageId && pageName) {
           axios.post(`${BASE_URL}/api/events`, {
-            data: { ...value, gameCode, pageId, pageName },
+            data: {
+              ...value,
+              gameCode,
+              pageId,
+              pageName,
+              createdAt: new Date(),
+            },
           });
         }
       }

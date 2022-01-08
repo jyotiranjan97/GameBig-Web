@@ -21,6 +21,7 @@ import {
   getDecoratedTime,
 } from '@/utilities/functions/dateConvert';
 import ShareEventLink from '@/components/UI/Share/ShareEventLink';
+import axios from 'axios';
 
 type Props = {
   data: EventData;
@@ -35,20 +36,21 @@ const EventCard: FC<Props> = ({ data, isPageOwner }: Props) => {
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
 
   useEffect(() => {
-    if (data._id && userData.uid) {
-      db.collection('events')
-        .doc(data._id)
-        .collection('participants')
-        .where('uids', 'array-contains', userData.uid)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            if (doc.data()) {
-              setIsRegistered(true);
-            }
-          });
-        });
-    }
+    const checkRegistration = async () => {
+      if (data._id && userData.uid) {
+        const response = await axios.get(
+          `${process.env.BASE_URL}/api/participants`,
+          {
+            params: {
+              eventId: data._id,
+              uid: userData.uid,
+            },
+          }
+        );
+        setIsRegistered(response.data.message);
+      }
+    };
+    checkRegistration();
   }, [data._id, userData.uid]);
 
   const onForwardAction = () => {
@@ -58,8 +60,6 @@ const EventCard: FC<Props> = ({ data, isPageOwner }: Props) => {
   function openLinkedpage() {
     router.push(`/page/${data.pageId}/`);
   }
-  console.log(data);
-
   return (
     <div
       className={

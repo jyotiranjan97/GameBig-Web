@@ -5,7 +5,7 @@ import {
   updateEvent,
   getEventById,
   getEventsByPageId,
-} from '../../libs/events';
+} from '../../../libs/events';
 
 export default async function handler(req: any, res: any) {
   // switch the methods
