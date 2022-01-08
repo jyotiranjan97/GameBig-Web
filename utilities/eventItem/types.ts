@@ -11,7 +11,7 @@ export interface EventFormData {
 }
 
 export interface EventData {
-  id: string;
+  _id: string;
   gameCode: string;
   mode: string;
   type: string;
@@ -21,8 +21,8 @@ export interface EventData {
   description: string;
   entryFee: number;
   prize: string;
-  linkedPageId: string;
-  linkedPageName: string;
+  pageId: string;
+  pageName: string;
   roomId?: string;
   password?: string;
 }

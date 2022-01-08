@@ -30,9 +30,9 @@ export default function DetailsAsParticipant({
   const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
-    if (data.id && userData.uid) {
+    if (data._id && userData.uid) {
       db.collection('events')
-        .doc(data.id)
+        .doc(data._id)
         .collection('participants')
         .where('uids', 'array-contains', userData.uid)
         .get()
@@ -44,10 +44,10 @@ export default function DetailsAsParticipant({
           });
         });
     }
-  }, [data.id, userData.uid]);
+  }, [data._id, userData.uid]);
 
   function openLinkedPage() {
-    router.push(`/page/${data.linkedPageId}/`);
+    router.push(`/page/${data.pageId}/`);
   }
 
   return (
@@ -60,14 +60,14 @@ export default function DetailsAsParticipant({
       <div className="flex flex-row justify-between space-x-5 mx-3">
         <div className="flex flex-row items-center space-x-5 mx-3">
           <EventCardAvatar
-            content={data?.linkedPageName?.charAt(0)}
+            content={data?.pageName?.charAt(0)}
             onclick={openLinkedPage}
           />
           <h1
             className="text-indigo-600 text-xl font-semibold flex my-auto hover:underline cursor-pointer"
             onClick={openLinkedPage}
           >
-            {data?.linkedPageName}
+            {data?.pageName}
           </h1>
         </div>
         {isPageOwner ? (

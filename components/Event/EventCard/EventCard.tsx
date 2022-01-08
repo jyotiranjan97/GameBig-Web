@@ -35,9 +35,9 @@ const EventCard: FC<Props> = ({ data, isPageOwner }: Props) => {
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
 
   useEffect(() => {
-    if (data.id && userData.uid) {
+    if (data._id && userData.uid) {
       db.collection('events')
-        .doc(data.id)
+        .doc(data._id)
         .collection('participants')
         .where('uids', 'array-contains', userData.uid)
         .get()
@@ -49,15 +49,16 @@ const EventCard: FC<Props> = ({ data, isPageOwner }: Props) => {
           });
         });
     }
-  }, [data.id, userData.uid]);
+  }, [data._id, userData.uid]);
 
   const onForwardAction = () => {
-    router.push(`/page/${data.linkedPageId}/events/${data.id}/`);
+    router.push(`/page/${data.pageId}/events/${data._id}/`);
   };
 
   function openLinkedpage() {
-    router.push(`/page/${data.linkedPageId}/`);
+    router.push(`/page/${data.pageId}/`);
   }
+  console.log(data);
 
   return (
     <div
@@ -71,7 +72,7 @@ const EventCard: FC<Props> = ({ data, isPageOwner }: Props) => {
       <div className="flex flex-nowrap justify-between px-8 content-center py-5">
         <div className="flex flex-row">
           <EventCardAvatar
-            content={data.linkedPageName[0]}
+            content={data.pageName[0]}
             onclick={openLinkedpage}
           />
           <div>
@@ -79,7 +80,7 @@ const EventCard: FC<Props> = ({ data, isPageOwner }: Props) => {
               className="text-gray-300 text-lg font-semibold font-sans tracking-wide mx-3 hover:underline cursor-pointer"
               onClick={openLinkedpage}
             >
-              {data.linkedPageName}
+              {data.pageName}
             </span>
             <section className="flex flex-row mx-2 items-center mt-0.5">
               <LocationIcon
@@ -95,7 +96,7 @@ const EventCard: FC<Props> = ({ data, isPageOwner }: Props) => {
 
         {/** Share Event */}
         <ShareEventLink
-          link={`https://gamebig.in/page/${data.linkedPageId}/events/${data.id}`}
+          link={`https://gamebig.in/page/${data.pageId}/events/${data._id}`}
           game={games[data.gameCode].shortName}
         />
       </div>
@@ -170,7 +171,7 @@ const EventCard: FC<Props> = ({ data, isPageOwner }: Props) => {
           name="DETAILS"
           type="normal"
           onClick={() =>
-            router.push(`/page/${data.linkedPageId}/events/${data.id}/`)
+            router.push(`/page/${data.pageId}/events/${data._id}/`)
           }
         />
 
@@ -182,7 +183,7 @@ const EventCard: FC<Props> = ({ data, isPageOwner }: Props) => {
                 type="success"
                 onClick={() =>
                   router.push(
-                    `/page/${data.linkedPageId}/events/${data.id}/#register`
+                    `/page/${data.pageId}/events/${data._id}/#register`
                   )
                 }
               />

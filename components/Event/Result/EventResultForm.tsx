@@ -59,6 +59,9 @@ const EventResultForm = ({ participants, eventId }: Props) => {
 
   return (
     <div>
+      <h5 className="text-xl font-medium tracking-wide text-gray-400 ml-3">
+        Announce The Winners
+      </h5>
       <div className="grid md:grid-cols-2 md:gap-4 mx-6">
         <SelectDropDown
           name="position"
@@ -92,7 +95,7 @@ const EventResultForm = ({ participants, eventId }: Props) => {
       </div>
       <div className="mx-8">
         <FixedButton
-          name="Declare Winners"
+          name="Announce"
           type="submit"
           onClick={formik.handleSubmit}
         />
