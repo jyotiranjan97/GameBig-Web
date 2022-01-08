@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, FC } from 'react';
-// import { fetchParticipatedTeams } from '@/libs/getEventData';
 import { EventData } from '@/utilities/eventItem/types';
 import { TeamType } from '@/utilities/types';
 import axios from 'axios';
