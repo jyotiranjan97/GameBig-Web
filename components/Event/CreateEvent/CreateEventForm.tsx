@@ -25,14 +25,19 @@ export default function CreateEventForm({
   pageId?: string;
   pageName?: string;
 }) {
+  async function updateEvent(_id: string, data: EventFormData) {
+    const x = await axios.put(`${BASE_URL}/api/events`, {
+      _id: _id,
+      data: { $set: data },
+    });
+  }
   const formik = useFormik({
     initialValues: oldValues || HostEventForm[gameCode].initialValues,
     validationSchema: validationSchema,
     onSubmit: async (value: EventFormData, { resetForm }) => {
-      if (oldValues) {
-        axios.put(`${BASE_URL}/api/events`, {
-          data: { ...value, startTime: new Date(value.startTime) },
-        });
+      if (oldValues?._id) {
+        delete value._id;
+        updateEvent(oldValues._id, value);
       } else {
         if (pageId && pageName) {
           axios.post(`${BASE_URL}/api/events`, {
