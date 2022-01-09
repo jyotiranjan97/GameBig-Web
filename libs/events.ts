@@ -115,11 +115,11 @@ export async function updateEvent(
   try {
     // connect to the database
     let { db } = await connectToDatabase();
-    const { id, data } = req.body;
+    const { _id, data } = req.body;
     // update the published status of the event
     await db.collection('events').updateOne(
       {
-        _id: new ObjectId(id),
+        _id: new ObjectId(_id),
       },
       data
     );

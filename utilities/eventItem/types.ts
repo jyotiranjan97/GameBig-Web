@@ -1,4 +1,5 @@
 export interface EventFormData {
+  _id?: string;
   gameCode: string;
   mode: string;
   type: string;
@@ -11,7 +12,7 @@ export interface EventFormData {
 }
 
 export interface EventData {
-  _id: string;
+  _id?: string;
   gameCode: string;
   mode: string;
   type: string;

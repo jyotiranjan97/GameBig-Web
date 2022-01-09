@@ -42,6 +42,7 @@ export default function BasicEventRegistrationForm({
 
       axios.post(`${BASE_URL}/api/participants`, {
         data: {
+          createdAt: new Date(),
           eventId: eventData._id,
           teamName,
           phoneNumber,
@@ -49,7 +50,7 @@ export default function BasicEventRegistrationForm({
         },
       });
       axios.put(`${BASE_URL}/api/events`, {
-        id: eventData._id,
+        _id: eventData._id,
         data: { $inc: { noOfSlots: -1 } },
       });
       setIsRegistered(true);

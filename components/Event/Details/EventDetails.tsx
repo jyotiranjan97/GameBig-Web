@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import router from 'next/router';
 import { useAuth } from '../../../context/authContext';
 import { EventData } from '../../../utilities/eventItem/types';
@@ -7,46 +7,25 @@ import {
   getDecoratedTime,
 } from '../../../utilities/functions/dateConvert';
 import { games } from '../../../utilities/GameList';
-import { db } from '../../../firebase/firebaseClient';
 import TextButton from '../../UI/Buttons/TextButton';
 import EventCardAvatar from '../../UI/Avatar/EventCardAvatar';
 import { useUI } from '@/context/uiContext';
-import axios from 'axios';
 
 interface Props {
   data: EventData;
   isPageOwner: boolean;
   openEditModal: () => void;
+  isUserRegistered: boolean;
 }
 
 export default function DetailsAsParticipant({
   data,
   isPageOwner,
   openEditModal,
+  isUserRegistered,
 }: Props) {
-  const { userData } = useAuth();
   const { openSnackBar } = useUI();
-
-  const [isRegistered, setIsRegistered] = useState<boolean>(false);
   const [showInfo, setShowInfo] = useState(false);
-
-  useEffect(() => {
-    const checkRegistration = async () => {
-      if (data._id && userData.uid) {
-        const response = await axios.get(
-          `${process.env.BASE_URL}/api/participants`,
-          {
-            params: {
-              eventId: data._id,
-              uid: userData.uid,
-            },
-          }
-        );
-        setIsRegistered(response.data.message);
-      }
-    };
-    checkRegistration();
-  }, [data._id, userData.uid]);
 
   function openLinkedPage() {
     router.push(`/page/${data.pageId}/`);
@@ -139,7 +118,7 @@ export default function DetailsAsParticipant({
         </section>
       </div>
 
-      {isPageOwner || isRegistered ? (
+      {isPageOwner || isUserRegistered ? (
         <div>
           {data.roomId && (
             <div>

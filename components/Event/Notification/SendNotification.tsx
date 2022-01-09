@@ -15,7 +15,7 @@ export default function SendNotification({
 
   const updateTournamnet = async () => {
     axios.put(`${BASE_URL}/api/events`, {
-      id: eventData._id,
+      _id: eventData._id,
       data: { $set: { roomId, password } },
     });
   };

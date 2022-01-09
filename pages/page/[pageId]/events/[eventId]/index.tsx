@@ -42,6 +42,24 @@ export default function Event() {
   };
 
   useEffect(() => {
+    const checkRegistration = async () => {
+      if (event && uid) {
+        const response = await axios.get(
+          `${process.env.BASE_URL}/api/participants`,
+          {
+            params: {
+              eventId: event._id,
+              uid,
+            },
+          }
+        );
+        setIsRegistered(response.data.message);
+      }
+    };
+    checkRegistration();
+  }, [event, uid]);
+
+  useEffect(() => {
     const { eventId } = router.query;
     async function fetchEventById() {
       const response = await axios.get(`${process.env.BASE_URL}/api/events`, {
@@ -87,6 +105,7 @@ export default function Event() {
         }
       >
         <EventDetails
+          isUserRegistered={isRegistered}
           isPageOwner={isPageOwner()}
           data={event}
           openEditModal={openModal}
