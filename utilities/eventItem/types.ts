@@ -12,7 +12,7 @@ export interface EventFormData {
 }
 
 export interface EventData {
-  _id?: string;
+  _id: string;
   gameCode: string;
   mode: string;
   type: string;
