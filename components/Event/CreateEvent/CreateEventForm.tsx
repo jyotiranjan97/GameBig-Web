@@ -26,9 +26,21 @@ export default function CreateEventForm({
   pageName?: string;
 }) {
   async function updateEvent(_id: string, data: EventFormData) {
-    const x = await axios.put(`${BASE_URL}/api/events`, {
+    await axios.put(`${BASE_URL}/api/events`, {
       _id: _id,
       data: { $set: data },
+    });
+  }
+
+  async function createEvent(value: EventFormData) {
+    axios.post(`${BASE_URL}/api/events`, {
+      data: {
+        ...value,
+        gameCode,
+        pageId,
+        pageName,
+        createdAt: new Date(),
+      },
     });
   }
   const formik = useFormik({
@@ -40,15 +52,7 @@ export default function CreateEventForm({
         updateEvent(oldValues._id, value);
       } else {
         if (pageId && pageName) {
-          axios.post(`${BASE_URL}/api/events`, {
-            data: {
-              ...value,
-              gameCode,
-              pageId,
-              pageName,
-              createdAt: new Date(),
-            },
-          });
+          createEvent(value);
         }
       }
       onCancel();
