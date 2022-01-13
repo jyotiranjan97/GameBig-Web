@@ -8,6 +8,7 @@ import ResponsiveButton from '@/components/UI/Buttons/ResponsiveButton';
 import axios from 'axios';
 import SlotsGrid from '../CreateEvent/SlotsGrid';
 import { useUI } from '@/context/uiContext';
+
 const { BASE_URL } = process.env;
 
 interface Props {
@@ -50,7 +51,9 @@ export default function BasicEventRegistrationForm({
   const {
     userData: { uid, name, photoURL, username },
   } = useAuth();
+
   const { openSnackBar } = useUI();
+
   const [slots, setSlots] = useState(eventData.slots);
   const [currentSlotNumber, setCurrentSlotnumber] = useState<string>('');
   const formik = useFormik({
